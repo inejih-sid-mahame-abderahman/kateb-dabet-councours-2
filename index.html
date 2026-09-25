@@ -1,1230 +1,1115 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>اختبار كاتب الضبط — QCM متقدم متعدد الأجوبة</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Segoe UI', 'Tahoma', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%);
-            color: #1e293b;
-            padding: 16px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #app {
-            max-width: 880px;
-            width: 100%;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 24px 20px 32px;
-        }
-        h1 { font-size: 1.85rem; color: #1e1b4b; border-right: 6px solid #7c3aed; padding-right: 14px; margin-bottom: 6px; font-weight: 700; }
-        .subhead { font-size: 0.95rem; color: #475569; margin-bottom: 20px; padding-right: 20px; border-right: 3px solid #a78bfa; }
-        .badge { display: inline-block; background: #f3e8ff; color: #6d28d9; font-size: 0.75rem; padding: 2px 14px; border-radius: 40px; font-weight: 600; margin-left: 6px; }
-        .multi-badge { background: #fef3c7; color: #92400e; font-size: 0.7rem; padding: 2px 12px; border-radius: 40px; font-weight: 700; }
-        .hard-badge { background: #fee2e2; color: #991b1b; font-size: 0.7rem; padding: 2px 12px; border-radius: 40px; font-weight: 700; }
-        .flex-row { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; margin: 18px 0 12px; }
-        .filter-group { background: #f8fafc; border-radius: 20px; padding: 16px 18px; margin: 12px 0 18px; border: 1px solid #e2e8f0; }
-        .filter-row { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
-        .filter-label { font-size: 0.9rem; font-weight: 600; color: #334155; min-width: 60px; }
-        select, button {
-            font-size: 1rem; padding: 10px 18px; border-radius: 40px;
-            border: 1px solid #cbd5e1; background: white; color: #1e293b;
-            font-weight: 600; cursor: pointer; transition: 0.15s;
-            min-height: 48px; min-width: 90px; touch-action: manipulation;
-            font-family: inherit;
-        }
-        select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: left 14px center; background-size: 16px;
-            padding-left: 40px; appearance: none; -webkit-appearance: none;
-        }
-        button { background: #7c3aed; color: white; border: none; font-weight: 700; padding: 10px 28px; box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25); }
-        button:hover { background: #6d28d9; }
-        button:active { transform: scale(0.97); }
-        .btn-outline { background: transparent; color: #7c3aed; border: 1.5px solid #7c3aed; box-shadow: none; }
-        .btn-outline:hover { background: #f3e8ff; }
-        .btn-success { background: #16a34a; }
-        .btn-success:hover { background: #15803d; }
-        .btn-secondary { background: #94a3b8; }
-        .btn-secondary:hover { background: #64748b; }
-        .btn-verify { background: #ea580c; padding: 12px 32px; font-size: 1rem; }
-        .btn-verify:hover { background: #c2410c; }
-        .btn-verify:disabled { background: #cbd5e1; cursor: not-allowed; }
-        .question-card {
-            background: #fafcff; border-radius: 28px; padding: 20px 18px 12px;
-            margin: 12px 0 16px; border: 1px solid #e9edf2;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-        .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.88rem; color: #475569; flex-wrap: wrap; gap: 8px; }
-        .q-text { font-size: 1.12rem; line-height: 1.75; font-weight: 600; margin: 8px 0 6px; padding: 0 4px; color: #1e1b4b; }
-        .q-hint { font-size: 0.83rem; color: #92400e; background: #fef3c7; padding: 6px 14px; border-radius: 20px; display: inline-block; margin-bottom: 12px; font-weight: 600; }
-        .options-grid { display: flex; flex-direction: column; gap: 10px; margin: 16px 0 10px; }
-        .option-btn {
-            background: white; border: 2px solid #e2e8f0; border-radius: 60px;
-            padding: 14px 22px; font-size: 1rem; text-align: right; transition: 0.12s;
-            touch-action: manipulation; cursor: pointer; font-weight: 500;
-            display: flex; align-items: center; gap: 12px;
-        }
-        .option-btn:active { transform: scale(0.98); }
-        .option-btn .letter {
-            background: #f1f5f9; border-radius: 40px; width: 32px; height: 32px;
-            display: inline-flex; align-items: center; justify-content: center;
-            font-weight: 800; color: #1e293b; flex-shrink: 0; font-size: 0.88rem;
-            transition: 0.15s;
-        }
-        .option-btn.checked { border-color: #7c3aed; background: #f5f3ff; }
-        .option-btn.checked .letter { background: #7c3aed; color: #fff; }
-        .option-btn.correct { border-color: #16a34a; background: #dcfce7; }
-        .option-btn.correct .letter { background: #16a34a; color: #fff; }
-        .option-btn.wrong { border-color: #dc2626; background: #fee2e2; }
-        .option-btn.wrong .letter { background: #dc2626; color: #fff; }
-        .option-btn.missed { border-color: #16a34a; background: #f0fdf4; border-style: dashed; }
-        .option-btn.disabled { cursor: default; }
-        .feedback-box { background: #f1f5f9; border-radius: 24px; padding: 16px 20px; margin: 16px 0 12px; border-right: 6px solid #94a3b8; }
-        .feedback-box.correct-fb { border-right-color: #16a34a; background: #f0fdf4; }
-        .feedback-box.wrong-fb { border-right-color: #dc2626; background: #fef2f2; }
-        .fb-title { font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
-        .fb-explain { font-size: 0.94rem; line-height: 1.65; color: #1e293b; }
-        .progress-wrap { margin: 12px 0 8px; background: #e9edf2; border-radius: 40px; height: 8px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #7c3aed, #a78bfa); border-radius: 40px; transition: width 0.2s; width: 0%; }
-        .action-bar { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 18px; }
-        .result-box { text-align: center; padding: 20px 8px; }
-        .score-big { font-size: 3.5rem; font-weight: 800; color: #1e1b4b; line-height: 1.2; }
-        .score-sub { font-size: 1.15rem; color: #475569; font-weight: 600; }
-        .stat-grid { display: flex; justify-content: center; gap: 28px; margin: 20px 0 16px; flex-wrap: wrap; }
-        .stat-item { text-align: center; }
-        .stat-num { font-size: 2rem; font-weight: 800; }
-        .stat-label { color: #64748b; font-size: 0.88rem; font-weight: 600; }
-        .review-item { background: #fafcff; border-radius: 18px; padding: 14px 16px; border: 1px solid #e2e8f0; margin: 8px 0; }
-        .review-q { font-weight: 600; margin-bottom: 6px; color: #1e1b4b; }
-        .review-answer { font-size: 0.92rem; margin-top: 4px; line-height: 1.6; }
-        .review-correct { color: #16a34a; font-weight: 700; }
-        .review-wrong { color: #dc2626; font-weight: 700; }
-        .hidden { display: none !important; }
-        .tag { background: #ede9fe; padding: 2px 14px; border-radius: 40px; font-size: 0.76rem; color: #6d28d9; font-weight: 700; }
-        @media (max-width: 600px) {
-            #app { padding: 16px 12px; }
-            h1 { font-size: 1.4rem; }
-            .q-text { font-size: 1rem; }
-            .option-btn { padding: 12px 14px; font-size: 0.92rem; }
-            .stat-grid { gap: 16px; }
-            .score-big { font-size: 2.5rem; }
-            .stat-num { font-size: 1.6rem; }
-        }
-        .option-btn, button, select { touch-action: manipulation; }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>اختبار قانون الإجراءات المدنية والتجارية والإدارية والجنائية — كاتب ضبط</title>
+<style>
+  :root{
+    --bg:#eef2f7; --card:#ffffff; --ink:#1e293b; --muted:#64748b;
+    --accent:#1d4ed8; --accent2:#0ea5e9; --ok:#15803d; --okbg:#dcfce7;
+    --bad:#b91c1c; --badbg:#fee2e2; --line:#e2e8f0;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Segoe UI",Tahoma,Arial,"Noto Naskh Arabic",sans-serif;
+    background:linear-gradient(180deg,#eef2f7 0%,#e2e8f0 100%);
+    color:var(--ink); line-height:1.85; direction:rtl; min-height:100vh;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:14px 14px 90px;}
+
+  /* ===== Header ===== */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:linear-gradient(135deg,#0f2a6b 0%,#1d4ed8 55%,#0ea5e9 100%);
+    color:#fff; border-radius:0 0 18px 18px; padding:12px 16px 14px;
+    box-shadow:0 6px 18px rgba(15,42,107,.25);
+  }
+  .topbar h1{font-size:16px;margin:0 0 2px;font-weight:700;letter-spacing:.2px;}
+  .topbar .sub{font-size:12px;opacity:.88;margin-bottom:8px;}
+  .stats{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px;}
+  .chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);
+        padding:3px 10px;border-radius:999px;font-weight:600;}
+  .chip b{font-size:14px;}
+  .bar{height:8px;background:rgba(255,255,255,.22);border-radius:99px;margin-top:9px;overflow:hidden;}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#facc15,#4ade80);
+           border-radius:99px;transition:width .35s ease;}
+
+  /* ===== Cards ===== */
+  .card{
+    background:var(--card);border-radius:18px;padding:20px 18px;
+    box-shadow:0 4px 20px rgba(30,41,59,.08); margin-top:16px;
+  }
+  .qnum{
+    display:inline-flex;align-items:center;gap:8px;
+    background:#eef4ff;color:var(--accent);font-weight:700;font-size:13px;
+    padding:4px 12px;border-radius:999px;margin-bottom:12px;
+  }
+  .qtext{font-size:17.5px;font-weight:700;margin:0 0 16px;line-height:1.95;}
+  .opts{display:flex;flex-direction:column;gap:10px;}
+  .opt{
+    display:flex;gap:10px;align-items:flex-start;text-align:right;width:100%;
+    background:#fff;border:2px solid var(--line);border-radius:14px;
+    padding:12px 14px;font:inherit;font-size:15.5px;color:var(--ink);
+    cursor:pointer;transition:.18s;line-height:1.8;
+  }
+  .opt:hover:not(:disabled){border-color:#93c5fd;background:#f8fbff;transform:translateY(-1px);}
+  .opt:disabled{cursor:default;}
+  .opt .ltr{
+    flex:0 0 28px;height:28px;border-radius:9px;background:#f1f5f9;color:#334155;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;
+  }
+  .opt.ok{border-color:var(--ok);background:var(--okbg);}
+  .opt.ok .ltr{background:var(--ok);color:#fff;}
+  .opt.no{border-color:var(--bad);background:var(--badbg);}
+  .opt.no .ltr{background:var(--bad);color:#fff;}
+  .opt.dim{opacity:.62;}
+
+  .explain{
+    margin-top:16px;border-radius:14px;padding:14px 16px;font-size:15px;
+    background:#f1f5f9;border-right:5px solid var(--accent);
+  }
+  .explain .tag{display:block;font-weight:800;color:var(--accent);margin-bottom:4px;font-size:13.5px;}
+  .verdict{font-weight:800;font-size:15px;margin-bottom:6px;}
+  .verdict.g{color:var(--ok);} .verdict.r{color:var(--bad);}
+
+  .btnrow{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+  .btn{
+    border:0;border-radius:14px;padding:12px 26px;font:inherit;font-weight:700;
+    font-size:15.5px;cursor:pointer;transition:.18s;
+  }
+  .btn.main{background:linear-gradient(135deg,#1d4ed8,#0ea5e9);color:#fff;box-shadow:0 4px 14px rgba(29,78,216,.3);}
+  .btn.main:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(29,78,216,.4);}
+  .btn.ghost{background:#fff;color:var(--accent);border:2px solid #c7d8f7;}
+  .btn.ghost:hover{background:#f3f7ff;}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+  /* ===== Start & Result ===== */
+  .hero{text-align:center;padding:26px 18px;}
+  .hero .ico{font-size:44px;line-height:1;}
+  .hero h2{margin:10px 0 6px;font-size:22px;}
+  .hero p{color:var(--muted);font-size:14.5px;margin:6px 0;}
+  .rules{text-align:right;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:14px;
+         padding:14px 18px;margin:16px 0;font-size:14.5px;}
+  .rules li{margin-bottom:6px;}
+
+  .scorebox{text-align:center;padding:10px 0 4px;}
+  .circle{
+    width:150px;height:150px;border-radius:50%;margin:8px auto 14px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:conic-gradient(var(--accent) calc(var(--p) * 1%), #e2e8f0 0);
+    position:relative;
+  }
+  .circle::after{
+    content:"";position:absolute;inset:11px;background:#fff;border-radius:50%;
+  }
+  .circle span{position:relative;z-index:2;font-weight:800;}
+  .circle .big{font-size:34px;color:var(--accent);line-height:1.1;}
+  .circle .sm{font-size:12.5px;color:var(--muted);}
+
+  .review{margin-top:22px;}
+  .rev-item{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;background:#fff;}
+  .rev-item .rq{font-weight:700;font-size:15px;margin-bottom:8px;}
+  .rev-item .ra{font-size:14.5px;margin:3px 0;}
+  .rev-item .ra.g{color:var(--ok);font-weight:700;}
+  .rev-item .ra.r{color:var(--bad);font-weight:700;}
+  .rev-item .re{font-size:13.5px;color:var(--muted);margin-top:6px;}
+  .hidden{display:none !important;}
+  @media(max-width:520px){
+    .qtext{font-size:16px;}
+    .opt{font-size:14.5px;}
+    .wrap{padding:10px 10px 80px;}
+  }
+</style>
 </head>
 <body>
-<div id="app">
-    <header>
-        <h1>⚖️ اختبار كاتب الضبط — مستوى متقدم</h1>
-        <div class="subhead">QCM متعدد الأجوبة — أسئلة صعبة قائمة على التحليل القانوني وحل الحالات</div>
-    </header>
 
-    <main id="mainApp">
-        <!-- HOME -->
-        <div id="homeView">
-            <div class="filter-group">
-                <div class="filter-row">
-                    <span class="filter-label">المحور</span>
-                    <select id="axisFilter"><option value="all">الكل</option></select>
-                    <span class="filter-label">الصعوبة</span>
-                    <select id="difficultyFilter">
-                        <option value="all">الكل</option>
-                        <option value="hard">صعب</option>
-                        <option value="very_hard">صعب جداً</option>
-                    </select>
-                    <span class="filter-label">عدد الأسئلة</span>
-                    <select id="countFilter">
-                        <option value="20">20</option>
-                        <option value="50" selected>50</option>
-                        <option value="100">100</option>
-                        <option value="150">150</option>
-                        <option value="200">200</option>
-                        <option value="all">جميع الأسئلة</option>
-                    </select>
-                </div>
-            </div>
-            <div class="flex-row" style="justify-content:center; gap:16px;">
-                <button id="startPracticeBtn" class="btn-success" style="min-width:140px;">📝 تدريب</button>
-                <button id="startExamBtn" style="min-width:140px;">🎯 محاكاة المسابقة</button>
-            </div>
-            <div style="margin-top:14px; text-align:center; padding:12px; background:#fef3c7; border-radius:16px; color:#92400e; font-size:0.88rem; font-weight:600;">
-                ⚠️ كل سؤال قد يحتوي على إجابة واحدة أو أكثر. اختر جميع الإجابات الصحيحة ثم اضغط "تحقق".
-            </div>
-            <div style="margin-top:14px; text-align:center; color:#64748b; font-size:0.88rem; font-weight:600;">
-                ⚡ <strong id="totalQuestionCount">0</strong> سؤالاً QCM متقدم متعدد الأجوبة
-            </div>
-        </div>
+<div class="topbar">
+  <h1>اختبار تطبيقي — قانون الإجراءات المدنية والتجارية والإدارية وقانون الإجراءات الجنائية</h1>
+  <div class="sub">مقرر: كاتب ضبط &nbsp;|&nbsp; 100 سؤال اختيار من متعدد &nbsp;|&nbsp; المرجع: القانون المدني والتجاري – كتاب ضبط + أصول الإجراءات</div>
+  <div class="stats">
+    <span class="chip">السؤال: <b id="stCounter">0 / 100</b></span>
+    <span class="chip">الإجابات الصحيحة: <b id="stScore">0</b></span>
+    <span class="chip">النسبة: <b id="stPct">0%</b></span>
+  </div>
+  <div class="bar"><i id="stBar"></i></div>
+</div>
 
-        <!-- QUIZ -->
-        <div id="quizView" class="hidden">
-            <div class="flex-row" style="justify-content:space-between;">
-                <span id="qCounter" style="font-weight:700;">السؤال 1 من 50</span>
-                <span id="qSubjectBadge" class="badge">كاتب الضبط</span>
-            </div>
-            <div class="progress-wrap"><div id="progressFill" class="progress-fill" style="width:0%;"></div></div>
-            <div class="question-card">
-                <div class="q-header">
-                    <span id="qAxisLabel" class="tag">المحور</span>
-                    <span id="qMultiBadge" class="multi-badge">✔ متعدد الأجوبة</span>
-                    <span id="qDifficultyLabel" class="hard-badge">صعب</span>
-                </div>
-                <div id="qText" class="q-text">سؤال</div>
-                <div class="q-hint">🔍 اختر جميع الإجابات الصحيحة، ثم اضغط "تحقق"</div>
-                <div id="optionsContainer" class="options-grid"></div>
-                <div id="feedbackContainer" class="hidden"></div>
-            </div>
-            <div class="action-bar"><button id="verifyBtn" class="btn-verify">✅ تحقق</button></div>
-            <div class="action-bar">
-                <button id="prevBtn" class="btn-secondary">◀ السابق</button>
-                <button id="nextBtn" style="min-width:120px;">التالي ▶</button>
-                <button id="quitBtn" class="btn-outline">إنهاء</button>
-            </div>
-        </div>
+<div class="wrap">
 
-        <!-- RESULT -->
-        <div id="resultView" class="hidden">
-            <div class="result-box">
-                <div class="score-big" id="finalScore">0/0</div>
-                <div class="score-sub" id="finalPercent">0%</div>
-                <div class="stat-grid">
-                    <div class="stat-item"><div class="stat-num" style="color:#16a34a;" id="correctCount">0</div><div class="stat-label">صحيح</div></div>
-                    <div class="stat-item"><div class="stat-num" style="color:#dc2626;" id="wrongCount">0</div><div class="stat-label">خاطئ</div></div>
-                    <div class="stat-item"><div class="stat-num" style="color:#64748b;" id="unansweredCount">0</div><div class="stat-label">لم يجب</div></div>
-                </div>
-                <div id="performanceMsg" style="font-size:1rem; margin:12px 0; background:#f1f5f9; border-radius:40px; padding:10px 18px; font-weight:600;">أداء ممتاز</div>
-                <div class="flex-row" style="justify-content:center; gap:12px; margin-top:8px;">
-                    <button id="reviewMistakesBtn" class="btn-outline">📖 مراجعة الأخطاء</button>
-                    <button id="retryBtn" class="btn-success">🔄 إعادة</button>
-                    <button id="homeBtn" class="btn-secondary">🏠 الرئيسية</button>
-                </div>
-            </div>
-            <div id="reviewContainer" class="hidden" style="margin-top:18px;"></div>
-        </div>
-    </main>
+  <!-- ===== شاشة البداية ===== -->
+  <section id="startScreen" class="card hero">
+    <div class="ico">⚖️</div>
+    <h2>اختبار: تطبيق على قانون الإجراءات المدنية والتجارية والإدارية وقانون الإجراءات الجنائية</h2>
+    <p>100 سؤال متعدد الخيارات — مستوى متوسط إلى صعب — مع تصحيح فوري وتعليل مبني على نصوص المواد.</p>
+    <div class="rules">
+      <b>تعليمات الاختبار:</b>
+      <ul>
+        <li>عدد الأسئلة <b>100 سؤال</b>، ولكل سؤال <b>أربعة خيارات</b> وإجابة صحيحة واحدة فقط.</li>
+        <li>لا يمكن تغيير الإجابة بعد اختيارها؛ فكّر جيداً قبل الضغط.</li>
+        <li>بعد كل اختيار يظهر <b>التصحيح الفوري</b> مع <b>التعليل والمرجع من المواد</b>.</li>
+        <li>ترتيب الخيارات <b>يتغير عشوائياً</b> في كل مرة تفتح فيها الاختبار.</li>
+        <li>في نهاية الاختبار تظهر نتيجتك مع <b>مراجعة شاملة</b> لكل الأسئلة.</li>
+      </ul>
+    </div>
+    <div class="btnrow" style="justify-content:center;">
+      <button class="btn main" id="startBtn">ابدأ الاختبار الآن</button>
+    </div>
+  </section>
+
+  <!-- ===== شاشة السؤال ===== -->
+  <section id="quizScreen" class="hidden">
+    <div class="card">
+      <div class="qnum" id="qBadge">السؤال 1 من 100</div>
+      <h3 class="qtext" id="qText"></h3>
+      <div class="opts" id="qOpts"></div>
+      <div id="explainBox" class="explain hidden">
+        <span class="tag">التعليل والمرجع</span>
+        <div class="verdict" id="verdict"></div>
+        <div id="explainText"></div>
+      </div>
+      <div class="btnrow">
+        <button class="btn main" id="nextBtn" disabled>السؤال التالي ←</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== شاشة النتيجة ===== -->
+  <section id="resultScreen" class="hidden">
+    <div class="card scorebox">
+      <h2 style="margin:0 0 4px;">النتيجة النهائية</h2>
+      <p style="color:#64748b;font-size:14px;margin:0;">تقييم أدائك في اختبار كاتب الضبط</p>
+      <div class="circle" id="scoreCircle" style="--p:0">
+        <span class="big" id="finalPct">0%</span>
+        <span class="sm" id="finalFrac">0 / 100</span>
+      </div>
+      <div id="gradeMsg" style="font-weight:800;font-size:17px;margin-bottom:6px;"></div>
+      <div id="gradeSub" style="color:#64748b;font-size:14px;"></div>
+      <div class="btnrow" style="justify-content:center;">
+        <button class="btn main" id="retryBtn">إعادة الاختبار</button>
+        <button class="btn ghost" id="reviewBtn">عرض المراجعة الشاملة</button>
+      </div>
+    </div>
+
+    <div id="reviewWrap" class="review hidden">
+      <div class="card">
+        <h3 style="margin:0 0 12px;">المراجعة الشاملة للأسئلة</h3>
+        <div id="reviewList"></div>
+      </div>
+    </div>
+  </section>
+
 </div>
 
 <script>
-// ============================================================
-//  QUESTION DATABASE — 120 أسئلة صعبة متعددة الأجوبة
-//  correct: مصفوفة فهارس الإجابات الصحيحة (1 أو أكثر)
-// ============================================================
-const questions = [
-    // ═══════════════ القانون الجنائي — حالات معقدة (60 سؤال) ═══════════════
-    {id:'CJ01',axis:'القانون الجنائي',difficulty:'hard',
-     question:'قام "أ" بضرب "ب" بقصد إيذائه، فسقط "ب" أرضاً وتوفي نتيجة اصطدام رأسه بحجر. ما هي التكييفات القانونية الصحيحة المحتملة؟',
-     options:['قتل عمد إذا ثبت أن الفعل تجاوز قصد الإيذاء','قتل خطأ إذا ثبت عدم توقع الموت','ضرب أفضى إلى موت','شروع في قتل'],
-     correct:[0,1,2],
-     explanation:'الضرب المفضي إلى الموت جريمة مستقلة في الفقه الجنائي، وقد يكون قتلاً عمداً إذا تجاوز القصد، أو قتلاً خطأ إذا لم يتوقع الفاعل الموت. أما الشروع في القتل فلا يتحقق مع تحقق النتيجة.'},
-
-    {id:'CJ02',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'حرض "أ" "ب" على سرقة منزل، لكن "ب" امتنع عن التنفيذ خوفاً. ما هو الوضع القانوني لـ"أ"؟',
-     options:['يعتبر محرضاً ومسؤولاً إذا كان التحريض مباشراً','لا يعاقب لأن الجريمة لم تقع','يعتبر شريكاً بالاتفاق','يعتبر فاعلاً معنوياً'],
-     correct:[0,2,3],
-     explanation:'التحريض يلزم إذا اقترن بالاتفاق. الفاعل المعنوي هو من يحرض على ارتكاب الجريمة بشرط أن يكون التحريض مباشراً وفعالاً، مع أنه لا يعاقب على الجريمة غير الواقعة عادة، إلا في حالات استثنائية كالاتفاق الجنائي المستقل.'},
-
-    {id:'CJ03',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'كان "أ" يشرب الخمر طوعاً، ثم ارتكب جريمة تحت تأثير السكر. ما هي مسؤوليته الجنائية؟',
-     options:['مسؤولية كاملة لأن السكر غير مقصود في الجريمة','يعتبر السكر ظرفاً مشدداً في القانون','قد يعتبر السكر سبباً للانعدام إذا كان غير إرادي','المسؤولية كاملة إذا كان السكر إرادياً'],
-     correct:[0,1,2,3],
-     explanation:'السكر الإرادي لا ينفي المسؤولية بل قد يشددها، بينما السكر غير الإرادي قد يؤدي إلى انعدام المسؤولية. قانون العقوبات يميز بين الحالات.'},
-
-    {id:'CJ04',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط اعتبار "التوبة" سبباً لإعفاء الجاني من العقوبة في جريمة الشروع؟',
-     options:['أن تكون توبة إرادية','أن تكون قبل إتمام الجريمة','أن تكون بعد اكتمال الجريمة','أن تكون قبل أن يبدأ التحقيق'],
-     correct:[0,1,3],
-     explanation:'التوبة المعتبرة يجب أن تكون إرادية وقبل إتمام الجريمة وقبل بدء التحقيق. التوبة بعد اكتمال الجريمة لا تعفي بل قد تخفف.'},
-
-    {id:'CJ05',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'اشترك "أ" و"ب" في قتل "ج"، لكن "أ" أطلق النار فقط، بينما "ب" كان يراقب الشارع. ما هي التكييفات الصحيحة؟',
-     options:['"أ" فاعل أصلي و"ب" شريك','كلاهما فاعلان أصليان','"ب" شريك بالمساعدة','"أ" فاعل أصلي و"ب" فاعل معنوي'],
-     correct:[0,2],
-     explanation:'المراقبة تُعد مساعدة مادية، فيكون صاحبها شريكاً. الفاعل الأصلي هو من يرتكب الفعل المادي الأصلي، والفاعل المعنوي هو من يدفع إرادة الجاني دون مساهمة مادية.'},
-
-    {id:'CJ06',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يعتبر فيها الخطأ المهني جريمة جنائية؟',
-     options:['عندما يكون الخطأ جسيماً','عندما ينص القانون على تجريم الخطأ','عندما يكون الخطأ يسيراً','عندما ينتج عنه ضرر بالغير'],
-     correct:[0,1,3],
-     explanation:'الخطأ المهني يعاقب عليه جنائياً إذا كان جسيماً أو نص القانون على تجريم الخطأ أو أنتج ضرراً بالغير. أما الخطأ اليسير فقد لا يعاقب عليه إلا مدنياً.'},
-
-    {id:'CJ07',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'في جريمة القذف، ما هي الشروط المطلوبة لقيام الجريمة؟',
-     options:['نسبة واقعة معينة تمس العرض','العلنية','القصد الجنائي','إثبات كذب الواقعة'],
-     correct:[0,1,2],
-     explanation:'القذف يتطلب نسبة واقعة معينة تمس العرض، والعلنية، والقصد الجنائي. لا يُشترط إثبات كذب الواقعة بل يكفي أن تكون قد نسبت في العلن.'},
-
-    {id:'CJ08',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الفروق الجوهرية بين القتل العمد والقتل مع سبق الإصرار؟',
-     options:['سبق الإصرار ظرف مشدد','سبق الإصرار يفترض التفكير الهادئ','سبق الإصرار لا يفترق عن العمد','سبق الإصرار ينفي المسؤولية'],
-     correct:[0,1],
-     explanation:'سبق الإصرار ظرف مشدد يقوم على التفكير الهادئ والتخطيط. القتل العمد قد يقع دون سبق إصرار في لحظة غضب.'},
-
-    {id:'CJ09',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط تحقق "المساهمة الجنائية" في الجريمة؟',
-     options:['الاشتراك في الفعل المادي','التدخل بمساعدة مادية','التحريض على الجريمة','مجرد العلم بالجريمة'],
-     correct:[0,1,2],
-     explanation:'المساهمة تتطلب المشاركة الفعلية أو المساعدة أو التحريض. مجرد العلم بالجريمة دون إبلاغ لا يُعد مساهمة جنائية.'},
-
-    {id:'CJ10',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'إذا ارتكب موظف عمومي جريمة اختلاس، ما هي الظروف المشددة المحتملة؟',
-     options:['صفته الوظيفية','الاستغلال الوظيفي','تعدد مرات الاختلاس','كون المال خاصاً'],
-     correct:[0,1,2],
-     explanation:'صفة الموظف والاستغلال الوظيفي وتعدد المرات كلها ظروف مشددة. كون المال خاصاً لا يشكل جريمة اختلاس بل خيانة أمانة.'},
-
-    {id:'CJ11',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط اعتبر "الفاعل المعنوي" مسؤولاً جنائياً؟',
-     options:['أن يدفع الجاني إلى ارتكاب الجريمة','أن يخطط للجريمة','أن يحرض على الجريمة','أن يعلم بالجريمة فقط'],
-     correct:[0,1,2],
-     explanation:'الفاعل المعنوي هو من يدفع الجاني أو يخطط أو يحرض. مجرد العلم بالجريمة لا يكفي.'},
-
-    {id:'CJ12',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط الانتفاع بـ"أسباب الإباحة"؟',
-     options:['حصول اعتداء حالي','ضرورة الدفاع','التناسب بين الفعل والاعتداء','موافقة المعتدي'],
-     correct:[0,1,2],
-     explanation:'أسباب الإباحة كالدفاع الشرعي تتطلب اعتداءً حالياً، ضرورة الدفاع، التناسب. لا تُشترط موافقة المعتدي.'},
-
-    {id:'CJ13',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يعاقب فيها القانون على الشروع في الجريمة؟',
-     options:['إذا كانت الجريمة جناية','إذا كانت الجريمة جنحة','إذا نص القانون على المعاقبة','إذا كان الشروع قد بدأ بتنفيذ ظاهر'],
-     correct:[0,2,3],
-     explanation:'الشروع معاقب عليه في الجنايات دائماً، وفي الجنح إذا نص القانون. ولا بد أن يبدأ التنفيذ بدءاً ظاهراً، وليس مجرد تحضير.'},
-
-    {id:'CJ14',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط "حالة الضرورة" كسبب للإباحة؟',
-     options:['خطر حالي أو وشيك','عدم إمكان إزالة الخطر بوسيلة أقل ضرراً','أن يكون الخطر على النفس أو الغير','أن يكون الخطر على المال فقط'],
-     correct:[0,1,2],
-     explanation:'حالة الضرورة تشمل الخطر على النفس أو الغير، مع شروط الحال والأقل ضرراً. قد يكون الخطر على المال أيضاً إذا استوفى الشروط.'},
-
-    {id:'CJ15',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'في جريمة "تزوير المحررات الرسمية"، ما هي العناصر المكونة للجريمة؟',
-     options:['إحداث تغيير في الحقيقة','أن يكون المحرر رسمياً','قصد الإضرار','إشهاد شهود'],
-     correct:[0,1,2],
-     explanation:'التزوير يقوم على تغيير الحقيقة في محرر رسمي بقصد الإضرار. لا يُشترط إشهاد شهود كركن من أركان الجريمة.'},
-
-    {id:'CJ16',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يُعفى فيها الفاعل من العقوبة بسبب "التوبة" أو "الرجوع عن الجريمة"؟',
-     options:['إذا كشف الجريمة قبل العلم بها','إذا ساعد في إلقاء القبض على بقية المتهمين','إذا ندم على الفعل','إذا تراجع قبل اكتمال الجريمة'],
-     correct:[0,1,3],
-     explanation:'الرجوع المعتبر هو التراجع قبل اكتمال الجريمة أو الكشف عنها قبل العلم بها. الندم وحده لا يعفي من العقوبة.'},
-
-    {id:'CJ17',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط "الخطأ غير المقصود" في القانون الجنائي؟',
-     options:['إهمال','عدم تبصر','رعونة','قصد إجرامي'],
-     correct:[0,1,2],
-     explanation:'الخطأ غير المقصود يتطلب الإهمال أو عدم التبصر أو الرعونة أو عدم احترام القانون. القصد الإجرامي ينقله إلى العمد.'},
-
-    {id:'CJ18',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الفروق الجوهرية بين القتل والقتل الخطأ في الفقه الجنائي؟',
-     options:['توفر القصد','عدم توفر القصد','العقوبة أخف في الخطأ','القصد الجنائي'],
-     correct:[0,1,2,3],
-     explanation:'القتل العمد يتوفر فيه القصد، والقتل الخطأ ينتفي فيه القصد، وعقوبته أخف. القصد الجنائي هو معيار التمييز الأساسي.'},
-
-    {id:'CJ19',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط اعتبار "الاختصاص" في التحقيق؟',
-     options:['اختصاص نوعي','اختصاص إقليمي','اختصاص زماني','اختصاص بالشخص'],
-     correct:[0,1,2,3],
-     explanation:'الاختصاص في التحقيق يشمل: نوعي، إقليمي، زماني، وشخصي، وكلها شروط ضرورية.'},
-
-    {id:'CJ20',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'في جريمة "إساءة الأمانة"، ما هي العناصر المكونة؟',
-     options:['تسليم المال على سبيل الأمانة','استعمال المال على غير الوجه المتفق عليه','قصد الاستيلاء','كتابة عقد رسمي'],
-     correct:[0,1,2],
-     explanation:'إساءة الأمانة تقوم على تسليم المال أمانة، ثم استعماله على غير الوجه المتفق عليه بقصد الاستيلاء. لا يُشترط عقد رسمي.'},
-
-    {id:'CJ21',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي تعتبر "تهديداً" جريمة معاقباً عليها في القانون الجنائي؟',
-     options:['تهديد بارتكاب جناية','تهديد مصحوب بأمر','تهديد شفهي بجريمة','تهديد في السر'],
-     correct:[0,1],
-     explanation:'التهديد يعاقب عليه إذا كان بارتكاب جناية أو مصحوباً بأمر. التهديد بجنحة أو في السر قد لا يعاقب عليه إلا في حالات خاصة.'},
-
-    {id:'CJ22',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الشروط القانونية لقيام "الرشوة"؟',
-     options:['صفة الموظف العام','استغلال الوظيفة','اتفاق بين الراشي والمرتشي','وجود مبلغ محدد'],
-     correct:[0,1,2],
-     explanation:'الرشوة تشمل صفة الموظف، والاستغلال الوظيفي، والاتفاق. المبلغ لا يحدد، فقد يكون مادياً أو معنوياً.'},
-
-    {id:'CJ23',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الفروق بين "الفاعل الأصلي" و"الشريك"؟',
-     options:['الفاعل يرتكب الفعل المادي الأصلي','الشريك يساعد أو يسهل','الفاعل يعاقب أحياناً بعقوبة الشريك','الشريك يعاقب بنفس العقوبة دائماً'],
-     correct:[0,1,2],
-     explanation:'الفاعل الأصلي يرتكب الفعل المكون للجريمة، والشريك يساعد أو يسهل، وقد يعاقب الشريك بعقوبة الفاعل أو أخف حسب الظروف. الشريك لا يعاقب بنفس العقوبة دائماً.'},
-
-    {id:'CJ24',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي "الظروف المخففة" التي يمكن أن تخفف العقوبة؟',
-     options:['صغر السن','حسن السيرة','التوبة','عود الجاني للجريمة'],
-     correct:[0,1,2],
-     explanation:'الظروف المخففة تشمل: صغر السن، حسن السيرة، التوبة. أما العود فهو ظرف مشدد وليس مخففاً.'},
-
-    {id:'CJ25',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط تحقق "الدفاع الشرعي" في حالة الدفاع عن المال؟',
-     options:['اعتداء حالي','ضرورة الدفاع','التناسب','أن يكون المال في حوزة الدافع'],
-     correct:[0,1,2,3],
-     explanation:'الدفاع الشرعي عن المال يتطلب الاعتداء الحالي، ضرورة الدفاع، التناسب، وأن يكون المال في حوزة الدافع.'},
-
-    {id:'CJ26',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يعتبر فيها "الخطأ الجسيم" جريمة جنائية؟',
-     options:['عندما نص القانون','عندما ينتج عنه ضرر','عندما يكون متكرراً','عندما يكون السبب الرئيسي'],
-     correct:[0,1,2,3],
-     explanation:'الخطأ الجسيم يُعد جريمة جنائية إذا نص القانون أو أنتج ضرراً أو كان متكرراً أو سبباً رئيسياً في النتيجة.'},
-
-    {id:'CJ27',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط اعتبار "القصد الجنائي" متوفراً في الجريمة؟',
-     options:['العلم بعناصر الجريمة','الإرادة الحرة','توقع النتيجة','الاعتراف بالجريمة'],
-     correct:[0,1,2],
-     explanation:'القصد الجنائي يتمثل في العلم بعناصر الجريمة، والإرادة الحرة، وتوقع النتيجة. الاعتراف ليس شرطاً.'},
-
-    {id:'CJ28',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الفروق بين "القذف" و"السب"؟',
-     options:['القذف نسبة واقعة معينة','السب عدم نسبة واقعة','الاثنان يعاقب عليهما جنائياً','القذف لا يعاقب عليه'],
-     correct:[0,1,2],
-     explanation:'القذف نسبة واقعة معينة تمس العرض، والسب هو عدم نسبة واقعة. كلاهما معاقب عليه جنائياً، وإن اختلفت العقوبة.'},
-
-    {id:'CJ29',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط "الإعفاء" من العقوبة بسبب "صلة القرابة"؟',
-     options:['في جرائم معينة','في سرقة الأصول والفروع','في جرائم القتل','في جرائم الاعتداء'],
-     correct:[0,1],
-     explanation:'الإعفاء بسبب القرابة موجود في جرائم معينة كالسرقة بين الأصول والفروع، ولا يوجد في جرائم القتل.'},
-
-    {id:'CJ30',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الفروق بين "الشروع" و"التحضير" في الجريمة؟',
-     options:['الشروع بدء تنفيذ','التحضير أعمال سابقة','الشروع معاقب عليه','التحضير معاقب عليه دائماً'],
-     correct:[0,1,2],
-     explanation:'الشروع هو بدء التنفيذ، والتحضير هو الأعمال السابقة. الشروع معاقب عليه، أما التحضير فلا يعاقب عليه إلا إذا نص القانون.'},
-
-    {id:'CJ31',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط قيام "جريمة الرشوة" وفقاً للفقه الجنائي العام؟',
-     options:['صفة الموظف العام','الاستغلال الوظيفي','الاتفاق بين الراشي والمرتشي','وجود ضرر للمصلحة العامة'],
-     correct:[0,1,2,3],
-     explanation:'الرشوة تتطلب صفة الموظف، والاستغلال الوظيفي، والاتفاق. الضرر بالمصلحة العامة قد يكون سبباً للتشديد.'},
-
-    {id:'CJ32',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي تعتبر فيها "المسؤولية الجزائية" شخصية؟',
-     options:['القتل','السرقة','تعدد الجرائم','إعطاء الرشوة'],
-     correct:[0,1,2,3],
-     explanation:'المسؤولية الجزائية شخصية في جميع الجرائم، لا تنتقل للورثة.'},
-
-    {id:'CJ33',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الفروق بين "العمد" و"الخطأ" في القانون الجنائي؟',
-     options:['العمد يتطلب قصداً','الخطأ يقوم على الإهمال','العمد أشد عقوبة','الخطأ لا يعاقب عليه أبداً'],
-     correct:[0,1,2],
-     explanation:'العمد يتطلب قصداً، والخطأ يقوم على الإهمال، والعمد أشد عقوبة. الخطأ قد يعاقب عليه إذا نص القانون.'},
-
-    {id:'CJ34',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط تحقق "القتل الخطأ"؟',
-     options:['الفعل المادي','عدم توفر القصد','العلاقة السببية','ثبوت النية المسبقة'],
-     correct:[0,1,2],
-     explanation:'القتل الخطأ يتطلب الفعل المادي، عدم توفر القصد، والعلاقة السببية. النية المسبقة تنفي الخطأ.'},
-
-    {id:'CJ35',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي "الظروف المخففة" التي تنص عليها القوانين الجنائية عادة؟',
-     options:['صغر السن','حسن السيرة','التوبة','الرجوع عن الجريمة'],
-     correct:[0,1,2,3],
-     explanation:'الظروف المخففة تشمل: صغر السن، حسن السيرة، التوبة، والرجوع عن الجريمة قبل اكتمالها.'},
-
-    {id:'CJ36',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط "الجريمة المستمرة"؟',
-     options:['استمرار الفعل المادي','استمرار النتيجة','توفر القصد','تجديد النية'],
-     correct:[0,1,2],
-     explanation:'الجريمة المستمرة تتطلب استمرار الفعل المادي أو النتيجة، مع توفر القصد. تجديد النية ليس شرطاً.'},
-
-    {id:'CJ37',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي تعتبر فيها "الجريمة" واقعة على أمن الدولة؟',
-     options:['الخيانة العظمى','التخابر مع العدو','الإرهاب','تعاطي المخدرات'],
-     correct:[0,1,2],
-     explanation:'جرائم أمن الدولة تشمل: الخيانة، التخابر، الإرهاب. تعاطي المخدرات ليس جريمة على أمن الدولة.'},
-
-    {id:'CJ38',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الفروق بين "الجريمة العمدية" و"الجريمة غير العمدية"؟',
-     options:['العمدية تتطلب قصداً','غير العمدية تقوم على الإهمال','العمدية أشد عقوبة','غير العمدية لا يعاقب عليها'],
-     correct:[0,1,2],
-     explanation:'العمدية تتطلب قصداً، غير العمدية تقوم على الإهمال، والعمدية أشد عقوبة. غير العمدية يعاقب عليها إذا نص القانون.'},
-
-    {id:'CJ39',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يعتبر فيها "الخطأ غير المقصود" جريمة جنائية؟',
-     options:['عندما يكون الخطأ جسيماً','عندما نص القانون','عندما ينتج عنه ضرر','عندما يكون الخطأ متكرراً'],
-     correct:[0,1,2,3],
-     explanation:'الخطأ غير المقصود يعاقب عليه إذا كان جسيماً أو نص القانون أو أنتج ضرراً أو كان متكرراً.'},
-
-    {id:'CJ40',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط "الفاعل المعنوي" في الجريمة؟',
-     options:['التخطيط للجريمة','التحريض','دفع الجاني','مجرد العلم بالجريمة'],
-     correct:[0,1,2],
-     explanation:'الفاعل المعنوي يخطط ويحرض ويدفع، ولا يكفي العلم المجرد.'},
-
-    {id:'CJ41',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي تعتبر فيها "جريمة الشروع" قائمة؟',
-     options:['بدء التنفيذ','توفر القصد الجنائي','عدم تحقق النتيجة','تراجع الجاني بإرادته'],
-     correct:[0,1,2],
-     explanation:'الشروع يقوم على بدء التنفيذ، توفر القصد، وعدم تحقق النتيجة. التراجع الإرادي قد يعفي من العقوبة.'},
-
-    {id:'CJ42',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط "الظروف المشددة" في جريمة القتل؟',
-     options:['سبق الإصرار','صفة المجني عليه','استعمال السلاح','تعدد الفاعلين'],
-     correct:[0,1,2,3],
-     explanation:'جميع هذه الظروف قد تكون مشددة حسب قانون العقوبات.'},
-
-    {id:'CJ43',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي تنتفي فيها المسؤولية الجنائية بسبب "الجنون"؟',
-     options:['عندما يفقد الشخص إدراكه','عندما يفقد الشخص إرادته','عندما يكون تحت تأثير مرض نفسي','عندما يكون تحت تأثير غضب شديد'],
-     correct:[0,1,2],
-     explanation:'انعدام الإدراك أو الإرادة بسبب مرض نفسي يؤدي إلى انتفاء المسؤولية. الغضب الشديد ظرف مخفف وليس مانعاً.'},
-
-    {id:'CJ44',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الفروق بين "الجريمة البسيطة" و"الجريمة المعقدة"؟',
-     options:['البسيطة فعل واحد','المعقدة أفعال متعددة','البسيطة نية واحدة','المعقدة نيات متعددة'],
-     correct:[0,1,2,3],
-     explanation:'الجريمة البسيطة فعل واحد بنية واحدة، والمعقدة تتعدد أفعالها أو نواياها.'},
-
-    {id:'CJ45',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط "المسؤولية الجنائية" للشخص المعنوي؟',
-     options:['نص قانوني خاص','قيام الجريمة من ممثلها','وجود خطأ','تعويض الضحايا'],
-     correct:[0,1,2],
-     explanation:'المسؤولية الجنائية للشخص المعنوي تتطلب نصاً خاصاً، وقيام الجريمة من ممثلها، ووجود خطأ. التعويض ليس شرطاً.'},
-
-    {id:'CJ46',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط "الجريمة السياسية"؟',
-     options:['استهداف النظام السياسي','دافع سياسي','توفر عنصر العلنية','استهداف الممتلكات'],
-     correct:[0,1],
-     explanation:'الجريمة السياسية تستهدف النظام السياسي أو لها دافع سياسي. العلنية ليست شرطاً، واستهداف الممتلكات لا يكفي.'},
-
-    {id:'CJ47',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يعتبر فيها "الشروع" غير معاقب عليه؟',
-     options:['إذا كانت الجريمة مخالفة','إذا تراجع الجاني','إذا كان الشروع ناقصاً','إذا لم يبدأ التنفيذ'],
-     correct:[0,1,3],
-     explanation:'الشروع في المخالفات لا يعاقب عليه. التراجع الإرادي والتحضير وحده لا يعاقب. الشروع الناقص قد يعاقب عليه.'},
-
-    {id:'CJ48',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط قيام "جريمة التهديد"؟',
-     options:['تهديد بارتكاب جناية','تهديد في العلن','قصد تخويف المجني عليه','إشهار السلاح'],
-     correct:[0,1,2],
-     explanation:'التهديد يتطلب تهديداً بارتكاب جناية، في العلن، بقصد تخويف المجني عليه. إشهار السلاح قد يكون جريمة مستقلة.'},
-
-    {id:'CJ49',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط "الجريمة المؤقتة" و"الجريمة المستمرة"؟',
-     options:['المؤقتة تنتهي بمجرد وقوع الفعل','المستمرة تستمر باستمرار الفعل','المؤقتة قد تنتهي بنتيجة فورية','المستمرة تقتضي تجديد النية'],
-     correct:[0,1,2],
-     explanation:'الجريمة المؤقتة تنتهي بمجرد وقوعها، والمستمرة تستمر باستمرار الفعل أو النتيجة. تجديد النية ليس شرطاً.'},
-
-    {id:'CJ50',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يعتبر فيها "الخطأ" جريمة جنائية؟',
-     options:['عندما ينص القانون','عندما يكون الخطأ جسيماً','عندما ينتج عنه ضرر','عندما يكون الخطأ متعمداً'],
-     correct:[0,1,2],
-     explanation:'الخطأ يعاقب عليه جنائياً إذا نص القانون، أو كان جسيماً، أو أنتج ضرراً. الخطأ المتعمد يصبح عمداً.'},
-
-    {id:'CJ51',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط "الظروف المشددة" في جريمة السرقة؟',
-     options:['استعمال السلاح','الليل','تعدد الفاعلين','صفة المجني عليه'],
-     correct:[0,1,2,3],
-     explanation:'جميع هذه الظروف قد تكون مشددة حسب قانون العقوبات.'},
-
-    {id:'CJ52',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي تنتفي فيها المسؤولية الجنائية بسبب "الإكراه"؟',
-     options:['الإكراه المادي','الإكراه المعنوي','الإكراه غير المقاوم','الإكراه البسيط'],
-     correct:[0,1],
-     explanation:'الإكراه المادي والمعنوي غير المقاوم ينتفي بهما القصد. الإكراه البسيط لا ينتفي به القصد.'},
-
-    {id:'CJ53',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الفروق بين "الفاعل الأصلي" و"المساهم"؟',
-     options:['الفاعل يرتكب الفعل المادي','المساهم يشارك في الفعل','الفاعل يعاقب بعقوبة أشد','المساهم لا يعاقب'],
-     correct:[0,1,2],
-     explanation:'الفاعل يرتكب الفعل المادي الأصلي، والمساهم يشارك فيه. الفاعل الأصلي قد يعاقب بعقوبة أشد، لكن المساهم يعاقب أيضاً.'},
-
-    {id:'CJ54',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط اعتبار "القصد الجنائي" متوفراً في جريمة معينة؟',
-     options:['العلم','الإرادة','النية','التوبة'],
-     correct:[0,1,2],
-     explanation:'القصد الجنائي = العلم + الإرادة + النية. التوبة لا علاقة لها بالقصد.'},
-
-    {id:'CJ55',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يعتبر فيها "الخطأ" جريمة جنائية؟',
-     options:['الخطأ الجسيم','الخطأ المتكرر','الخطأ البسيط','الخطأ المفضي إلى ضرر'],
-     correct:[0,1,3],
-     explanation:'الخطأ يعاقب عليه إذا كان جسيماً، أو متكرراً، أو أنتج ضرراً. الخطأ البسيط لا يعاقب عليه إلا مدنياً.'},
-
-    {id:'CJ56',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط "الظروف المخففة" في جريمة القتل؟',
-     options:['صغر السن','التوبة','حسن السيرة','الدفاع الشرعي'],
-     correct:[0,1,2],
-     explanation:'الظروف المخففة تشمل صغر السن، التوبة، حسن السيرة. الدفاع الشرعي سبب إباحة وليس ظرفاً مخففاً.'},
-
-    {id:'CJ57',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط قيام "جريمة القذف" في الفقه الجنائي العام؟',
-     options:['نسبة واقعة معينة','العلنية','قصد الإضرار','إثبات كذب الواقعة'],
-     correct:[0,1,2],
-     explanation:'القذف يتطلب نسبة واقعة معينة، العلنية، قصد الإضرار. لا يُشترط إثبات كذب الواقعة.'},
-
-    {id:'CJ58',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي تعتبر فيها "الجريمة" واقعة على الأشخاص؟',
-     options:['القتل','الضرب','السب','السرقة'],
-     correct:[0,1,2],
-     explanation:'الجرائم على الأشخاص تشمل: القتل، الضرب، السب. السرقة جريمة على الأموال.'},
-
-    {id:'CJ59',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي شروط "الاختصاص" في الدعوى الجنائية؟',
-     options:['نوعي','إقليمي','شخصي','زماني'],
-     correct:[0,1,2,3],
-     explanation:'الاختصاص الجنائي يشمل النوعي والإقليمي والشخصي والزماني.'},
-
-    {id:'CJ60',axis:'القانون الجنائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يعتبر فيها "الشروع" معاقباً عليه؟',
-     options:['في الجنايات','في الجنح إذا نص القانون','في المخالفات','في الجرائم المستحيلة'],
-     correct:[0,1],
-     explanation:'الشروع معاقب عليه في الجنايات دائماً، وفي الجنح إذا نص القانون. لا يعاقب في المخالفات، والجرائم المستحيلة قد تعاقب حسب القانون.'},
-
-    // ═══════════════ التنظيم القضائي (50 سؤال) ═══════════════
-    {id:'TJ01',axis:'التنظيم القضائي',difficulty:'hard',
-     question:'إذا رفعت دعوى أمام محكمة غير مختصة نوعياً، ما هي الإجراءات الصحيحة؟',
-     options:['تصدر المحكمة حكماً بعدم الاختصاص','تحيل الدعوى إلى المحكمة المختصة','تنظر في الموضوع','يجب على المدعي إعادة رفع الدعوى'],
-     correct:[0,1],
-     explanation:'عند عدم الاختصاص النوعي، تصدر المحكمة حكماً بعدم الاختصاص وتأمر بإحالة الدعوى إلى المحكمة المختصة، ولا تنظر في الموضوع.'},
-
-    {id:'TJ02',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي ينعقد فيها الاختصاص للمحكمة المحليّة رغم وجود شرط تحكيم؟',
-     options:['إذا كان شرط التحكيم باطلاً','إذا لم يقم أحد الأطراف بالتمسك به','إذا كان الموضوع غير قابل للتحكيم','إذا اتفق الأطراف أمام المحكمة'],
-     correct:[0,1,2,3],
-     explanation:'الاختصاص ينعقد في جميع هذه الحالات، فشرط التحكيم الباطل لا يعتد به، وعدم التمسك به قد يعتبر تنازلاً، والموضوعات غير القابلة للتحكيم يختص بها القضاء.'},
-
-    {id:'TJ03',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط "الاختصاص الإقليمي" في المواد المدنية؟',
-     options:['موطن المدعى عليه','مكان تنفيذ العقد','مكان وقوع الضرر','اختيار المدعي'],
-     correct:[0,1,2],
-     explanation:'الاختصاص الإقليمي يتحدد بموطن المدعى عليه، أو مكان تنفيذ العقد أو مكان وقوع الضرر في بعض القضايا. المدعي لا يختار إلا في حالات خاصة.'},
-
-    {id:'TJ04',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي مهام النيابة العامة في النظام القضائي؟',
-     options:['إقامة الدعوى العمومية','مراقبة تطبيق القانون','تمثيل المجتمع','إصدار الأحكام'],
-     correct:[0,1,2],
-     explanation:'النيابة العامة تقيم الدعوى العمومية وتراقب تطبيق القانون وتمثل المجتمع. إصدار الأحكام من اختصاص القاضي.'},
-
-    {id:'TJ05',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط "الاختصاص" في المسائل الإدارية؟',
-     options:['قرار إداري','مصلحة','ضرر','أهلية'],
-     correct:[0,1,2,3],
-     explanation:'الاختصاص في المسائل الإدارية يشمل: قرار إداري، مصلحة، ضرر، أهلية.'},
-
-    {id:'TJ06',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي الفروق بين "المحكمة الابتدائية" و"محكمة الاستئناف"؟',
-     options:['الابتدائية تنظر أولاً','الاستئناف يعيد النظر','الابتدائية تفصل نهائياً','الاستئناف قد يفصل نهائياً'],
-     correct:[0,1,3],
-     explanation:'الابتدائية تنظر أولاً، والاستئناف يعيد النظر. الابتدائية لا تفصل نهائياً (ما عدا الحالات الاستثنائية)، والاستئناف قد يفصل نهائياً في بعض الحالات.'},
-
-    {id:'TJ07',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط "الاختصاص" في الدعوى التجارية؟',
-     options:['وجود عمل تجاري','صفة التاجر','طبيعة النزاع','موافقة الطرفين'],
-     correct:[0,1,2],
-     explanation:'الاختصاص التجاري يتحدد بعمل تجاري أو صفة تاجر أو طبيعة النزاع التجاري. موافقة الطرفين لا تكفي.'},
-
-    {id:'TJ08',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي مهام المحكمة العليا في النظام القضائي؟',
-     options:['مراقبة تطبيق القانون','توحيد الاجتهاد القضائي','النظر في الطعون بالنقض','إعادة النظر في الوقائع'],
-     correct:[0,1,2],
-     explanation:'المحكمة العليا تراقب القانون وتوحد الاجتهاد وتنظر النقض. لا تعيد النظر في الوقائع (تلك مهمة محاكم الموضوع).'},
-
-    {id:'TJ09',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يجوز فيها الطعن بالنقض؟',
-     options:['مخالفة القانون','عدم الاختصاص','انعدام التسبيب','إعادة تقييم الوقائع'],
-     correct:[0,1,2],
-     explanation:'النقض يُقبل في حالة مخالفة القانون، عدم الاختصاص، انعدام التسبيب. لا يُقبل لإعادة تقييم الوقائع.'},
-
-    {id:'TJ10',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط "الاختصاص" في الدعوى الإدارية؟',
-     options:['قرار إداري','ضرر','مصلحة','استنفاد طرق الطعن الإدارية'],
-     correct:[0,1,2,3],
-     explanation:'الاختصاص الإداري يشمل: قرار، ضرر، مصلحة، استنفاد طرق الطعن الإدارية.'},
-
-    {id:'TJ11',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي الفروق بين "الاختصاص النوعي" و"الاختصاص الإقليمي"؟',
-     options:['النوعي يتعلق بنوع القضية','الإقليمي يتعلق بالمكان','النوعي يتعلق بالمكان','الإقليمي يتعلق بنوع القضية'],
-     correct:[0,1],
-     explanation:'الاختصاص النوعي يتعلق بنوع القضية، والإقليمي يتعلق بالمكان. العكس خطأ.'},
-
-    {id:'TJ12',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط "الاختصاص" في قضايا الأحوال الشخصية؟',
-     options:['موطن الزوجين','آخر موطن مشترك','موطن المدعى عليه','اتفاق الزوجين'],
-     correct:[0,1,2],
-     explanation:'اختصاص قضايا الأحوال الشخصية يتحدد بموطن الزوجين أو آخر موطن مشترك أو موطن المدعى عليه. الاتفاق قد يكون ممكناً في بعض الحالات.'},
-
-    {id:'TJ13',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي "النيابة العامة" في النظام القضائي؟',
-     options:['هيئة قضائية','تمثل المجتمع','تقيم الدعوى العمومية','تصدر الأحكام'],
-     correct:[0,1,2],
-     explanation:'النيابة العامة هيئة قضائية تمثل المجتمع وتقيم الدعوى العمومية. لا تصدر الأحكام.'},
-
-    {id:'TJ14',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي الفروق بين "القاضي الجالس" و"القاضي الواقف"؟',
-     options:['الجالس يفصل في الدعوى','الواقف يمثل النيابة','الجالس يمثل النيابة','الواقف يفصل في الدعوى'],
-     correct:[0,1],
-     explanation:'القاضي الجالس يفصل في الدعوى، والقاضي الواقف يمثل النيابة العامة. العكس خطأ.'},
-
-    {id:'TJ15',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط "استقلال القضاء"؟',
-     options:['عدم التدخل في الأحكام','الاستقلال المالي','الاستقلال الإداري','تعيين القضاة من السلطة التنفيذية'],
-     correct:[0,1,2],
-     explanation:'استقلال القضاء يشمل عدم التدخل، الاستقلال المالي والإداري. تعيين القضاة من السلطة التنفيذية لا ينفي الاستقلال إن كانت ممارستهم مستقلة.'},
-
-    {id:'TJ16',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يجوز فيها "رد القاضي"؟',
-     options:['القرابة','المصلحة','العداء','اختلاف الرأي'],
-     correct:[0,1,2],
-     explanation:'رد القاضي يجوز في حالة القرابة، المصلحة، أو العداء. اختلاف الرأي ليس سبباً للرد.'},
-
-    {id:'TJ17',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط "الاختصاص" في قضايا التنفيذ؟',
-     options:['وجود حكم واجب النفاذ','قاضي التنفيذ','طبيعة النزاع','موافقة الخصم'],
-     correct:[0,1,2],
-     explanation:'الاختصاص في قضايا التنفيذ يشمل وجود حكم واجب النفاذ، قاضي التنفيذ، وطبيعة النزاع. موافقة الخصم لا تكفي.'},
-
-    {id:'TJ18',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي مهام "المحكمة الابتدائية"؟',
-     options:['نظر القضايا لأول مرة','إصدار الأحكام','مراقبة تطبيق القانون','النظر في الطعون'],
-     correct:[0,1],
-     explanation:'المحكمة الابتدائية تنظر القضايا لأول مرة وتصدر الأحكام. مراقبة تطبيق القانون والنظر في الطعون من اختصاص محاكم أخرى.'},
-
-    {id:'TJ19',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط "الاختصاص" في قضايا الجرائم؟',
-     options:['نوع الجريمة','مكان وقوعها','صفة الفاعل','جنسية الفاعل'],
-     correct:[0,1,2,3],
-     explanation:'اختصاص قضايا الجرائم يتحدد بنوع الجريمة، ومكان وقوعها، وصفة الفاعل، وجنسيته.'},
-
-    {id:'TJ20',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يعتبر فيها "الاختصاص" من النظام العام؟',
-     options:['الاختصاص النوعي','الاختصاص الإقليمي','الاختصاص الزماني','الاختصاص بالشخص'],
-     correct:[0,2],
-     explanation:'الاختصاص النوعي والزماني من النظام العام، لا يجوز التنازل عنهما. الاختصاص الإقليمي قد يكون قابلاً للتنازل في بعض الحالات.'},
-
-    {id:'TJ21',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط "الطعن بالاستئناف"؟',
-     options:['أجل محدد','قابلية الحكم للاستئناف','تقديم عريضة','موافقة الخصم'],
-     correct:[0,1,2],
-     explanation:'الاستئناف يتطلب أجل، قابلية الحكم للاستئناف، وتقديم عريضة. موافقة الخصم لا تُشترط.'},
-
-    {id:'TJ22',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي مهام "رئيس المحكمة"؟',
-     options:['إدارة المحكمة','توزيع القضايا','الإشراف على القضاة','إصدار الأحكام'],
-     correct:[0,1,2],
-     explanation:'رئيس المحكمة يدير، يوزع، ويشرف. إصدار الأحكام من اختصاص كل قاضٍ على حدة.'},
-
-    {id:'TJ23',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط "الاختصاص" في قضايا الشركات التجارية؟',
-     options:['مقر الشركة','طبيعة النزاع','صفة الأطراف','مكان وقوع النزاع'],
-     correct:[0,1,2,3],
-     explanation:'اختصاص قضايا الشركات يشمل: مقر الشركة، طبيعة النزاع، صفة الأطراف، ومكان وقوع النزاع.'},
-
-    {id:'TJ24',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يجوز فيها "الطعن بالمعارضة"؟',
-     options:['الأحكام الغيابية','الأحكام الحضورية','الأحكام النهائية','الأحكام الابتدائية'],
-     correct:[0],
-     explanation:'المعارضة طريق طعن ضد الأحكام الغيابية، ولا يجوز ضد الأحكام الحضورية.'},
-
-    {id:'TJ25',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي مهام "كتابة الضبط"؟',
-     options:['تحرير المحاضر','حفظ الوثائق','التبليغ','إصدار الأحكام'],
-     correct:[0,1,2],
-     explanation:'كتابة الضبط تحرر، تحفظ، وتبلغ. إصدار الأحكام من اختصاص القاضي.'},
-
-    {id:'TJ26',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط "الاختصاص" في قضايا التأمين؟',
-     options:['موطن المؤمن له','مكان وقوع الحادث','موطن المؤمن','طبيعة النزاع'],
-     correct:[0,1,2,3],
-     explanation:'اختصاص قضايا التأمين يشمل جميع هذه المعايير حسب طبيعة النزاع.'},
-
-    {id:'TJ27',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يجوز فيها "الطعن بالتماس إعادة النظر"؟',
-     options:['صدور حكم جديد','وقوع تدليس','ظهور مستندات حاسمة','مجرد الندم'],
-     correct:[0,1,2],
-     explanation:'التماس إعادة النظر طريق طعن غير عادي، ويجوز في حالات محددة مثل التدليس أو ظهور مستندات حاسمة أو صدور حكم جديد مؤثر.'},
-
-    {id:'TJ28',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط قبول الطعن بالنقض في المادة الجنائية؟',
-     options:['أن يكون الحكم نهائياً','مخالفة القانون','عدم الاختصاص','إعادة تقدير الوقائع'],
-     correct:[0,1,2],
-     explanation:'النقض لا يعيد تقدير الوقائع، بل يراقب مخالفة القانون وعدم الاختصاص وانعدام التسبيب.'},
-
-    {id:'TJ29',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي مهام قاضي التحقيق؟',
-     options:['التحقيق في الجنايات','إصدار أوامر التحقيق','مراقبة النيابة العامة','إصدار الحكم النهائي'],
-     correct:[0,1],
-     explanation:'قاضي التحقيق يحقق ويصدر أوامره، ولا يصدر الحكم النهائي ولا يراقب النيابة العامة.'},
-
-    {id:'TJ30',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي معايير اختصاص محكمة الأسرة؟',
-     options:['موطن الزوجين','آخر موطن مشترك','موطن المدعى عليه','جنسية الأطراف'],
-     correct:[0,1,2],
-     explanation:'اختصاص محكمة الأسرة يتحدد بموطن الزوجين أو آخر موطن مشترك أو موطن المدعى عليه، لا بالجنسية وحدها.'},
-
-    {id:'TJ31',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي طرق الطعن العادية؟',
-     options:['الاستئناف','المعارضة','النقض','التماس إعادة النظر'],
-     correct:[0,1],
-     explanation:'الاستئناف والمعارضة طرق طعن عادية، أما النقض والتماس إعادة النظر فغير عادية.'},
-
-    {id:'TJ32',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي طرق الطعن غير العادية؟',
-     options:['النقض','التماس إعادة النظر','الاستئناف','المعارضة'],
-     correct:[0,1],
-     explanation:'النقض والتماس إعادة النظر طرق غير عادية، وتستلزم شروطاً أضيق.'},
-
-    {id:'TJ33',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي أسباب رد القاضي؟',
-     options:['القرابة','المصلحة','العداء','اختلاف الرأي'],
-     correct:[0,1,2],
-     explanation:'رد القاضي يقوم على القرابة أو المصلحة أو العداء، لا على اختلاف الرأي القانوني.'},
-
-    {id:'TJ34',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي مهام كتابة الضبط؟',
-     options:['تحرير المحاضر','حفظ الوثائق','التبليغ','إصدار الأحكام'],
-     correct:[0,1,2],
-     explanation:'كتابة الضبط تحرر المحاضر وتحفظ الوثائق وتبلغ، ولا تصدر الأحكام.'},
-
-    {id:'TJ35',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي ضمانات استقلال القضاء؟',
-     options:['عدم التدخل في الأحكام','الاستقلال المالي','الاستقلال الإداري','تعيين القضاة من السلطة التنفيذية'],
-     correct:[0,1,2],
-     explanation:'استقلال القضاء يتحقق بعدم التدخل والاستقلال المالي والإداري، لا بكون التعيين تنفيذياً.'},
-
-    {id:'TJ36',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي معايير اختصاص المحكمة التجارية؟',
-     options:['وجود عمل تجاري','صفة التاجر','طبيعة النزاع','موافقة الطرفين'],
-     correct:[0,1,2],
-     explanation:'الاختصاص التجاري يقوم على العمل التجاري أو صفة التاجر أو طبيعة النزاع، لا على موافقة الطرفين وحدها.'},
-
-    {id:'TJ37',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط اختصاص المحكمة الإدارية؟',
-     options:['قرار إداري','ضرر','مصلحة','استنفاد طرق الطعن الإدارية'],
-     correct:[0,1,2,3],
-     explanation:'الدعوى الإدارية تتطلب قراراً إدارياً وضرراً ومصلحة واستنفاد الطرق الإدارية عند الاقتضاء.'},
-
-    {id:'TJ38',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي الخصائص الشكلية للحكم القضائي؟',
-     options:['التسبيب','المنطوق','التوقيع','الترجمة'],
-     correct:[0,1,2],
-     explanation:'الحكم يجب أن يكون مسبباً ومنطوقاً وموقعاً. الترجمة ليست شرطاً دائماً.'},
-
-    {id:'TJ39',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط صحة التبليغ القضائي؟',
-     options:['الكتابة','التوقيع','تاريخ التبليغ','حضور الخصم'],
-     correct:[0,1,2],
-     explanation:'التبليغ الصحيح يتطلب الكتابة والتوقيع والتاريخ، ولا يشترط حضور الخصم شخصياً.'},
-
-    {id:'TJ40',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي مهام النيابة العامة؟',
-     options:['إقامة الدعوى العمومية','مراقبة تطبيق القانون','تمثيل المجتمع','إصدار الأحكام'],
-     correct:[0,1,2],
-     explanation:'النيابة العامة تقيم الدعوى العمومية وتراقب القانون وتمثل المجتمع، ولا تصدر الأحكام.'},
-
-    {id:'TJ41',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي معايير الاختصاص النوعي؟',
-     options:['نوع القضية','قيمة النزاع','صفة الأطراف','مكان القضية'],
-     correct:[0,1,2],
-     explanation:'الاختصاص النوعي يتحدد بنوع القضية أو قيمتها أو صفة الأطراف، لا بالمكان.'},
-
-    {id:'TJ42',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي معايير الاختصاص الإقليمي؟',
-     options:['موطن المدعى عليه','مكان تنفيذ العقد','مكان وقوع الضرر','اختيار المدعي'],
-     correct:[0,1,2],
-     explanation:'الاختصاص الإقليمي يقوم على موطن المدعى عليه أو مكان التنفيذ أو وقوع الضرر، لا على اختيار المدعي المطلق.'},
-
-    {id:'TJ43',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'في أي حالة يجوز الطعن بالمعارضة؟',
-     options:['الأحكام الغيابية','الأحكام الحضورية','الأحكام النهائية','الأحكام الابتدائية'],
-     correct:[0],
-     explanation:'المعارضة تخص الأحكام الغيابية، لا الحضورية أو النهائية.'},
-
-    {id:'TJ44',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط الطعن بالاستئناف؟',
-     options:['أجل محدد','قابلية الحكم للاستئناف','تقديم عريضة','موافقة الخصم'],
-     correct:[0,1,2],
-     explanation:'الاستئناف يتطلب أجلًا وقابلية الحكم وعريضة، ولا يتطلب موافقة الخصم.'},
-
-    {id:'TJ45',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي مهام المحكمة العليا؟',
-     options:['مراقبة تطبيق القانون','توحيد الاجتهاد القضائي','النظر في الطعون بالنقض','إعادة النظر في الوقائع'],
-     correct:[0,1,2],
-     explanation:'المحكمة العليا تراقب القانون وتوحد الاجتهاد وتنظر النقض، ولا تعيد تقدير الوقائع.'},
-
-    {id:'TJ46',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي شروط اختصاص قاضي التنفيذ؟',
-     options:['وجود حكم واجب النفاذ','قاضي التنفيذ','طبيعة النزاع','موافقة الخصم'],
-     correct:[0,1,2],
-     explanation:'اختصاص التنفيذ يقوم على سند واجب النفاذ وقاضي التنفيذ وطبيعة النزاع، لا على موافقة الخصم.'},
-
-    {id:'TJ47',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي معايير اختصاص قضايا التأمين؟',
-     options:['موطن المؤمن له','مكان وقوع الحادث','موطن المؤمن','طبيعة النزاع'],
-     correct:[0,1,2,3],
-     explanation:'قضايا التأمين قد تختص بها المحكمة وفق موطن المؤمن له أو مكان الحادث أو موطن المؤمن أو طبيعة النزاع.'},
-
-    {id:'TJ48',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي الفروق بين القاضي الجالس والقاضي الواقف؟',
-     options:['الجالس يفصل في الدعوى','الواقف يمثل النيابة','الجالس يمثل النيابة','الواقف يفصل في الدعوى'],
-     correct:[0,1],
-     explanation:'القاضي الجالس يفصل، والقاضي الواقف يمثل النيابة العامة. العكس غير صحيح.'},
-
-    {id:'TJ49',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي معايير اختصاص قضايا الشركات التجارية؟',
-     options:['مقر الشركة','طبيعة النزاع','صفة الأطراف','مكان وقوع النزاع'],
-     correct:[0,1,2,3],
-     explanation:'اختصاص قضايا الشركات قد يتحدد بمقر الشركة أو طبيعة النزاع أو صفة الأطراف أو مكان وقوع النزاع.'},
-
-    {id:'TJ50',axis:'التنظيم القضائي',difficulty:'very_hard',
-     question:'ما هي الحالات التي يعتبر فيها الاختصاص من النظام العام؟',
-     options:['الاختصاص النوعي','الاختصاص الإقليمي','الاختصاص الزماني','الاختصاص بالشخص'],
-     correct:[0,2],
-     explanation:'الاختصاص النوعي والزماني من النظام العام، ولا يجوز التنازل عنهما. الإقليمي قد يكون قابلاً للتنازل في بعض الحالات.'},
-
-    // ═══════════════ المسطرة المدنية (10 أسئلة) ═══════════════
-    {id:'PM01',axis:'المسطرة المدنية',difficulty:'hard',
-     question:'ما هي شروط قبول الدعوى المدنية؟',
-     options:['المصلحة','الصفة','الأهلية','الاستعجال'],
-     correct:[0,1,2],
-     explanation:'قبول الدعوى يتطلب المصلحة والصفة والأهلية. الاستعجال ليس شرطاً عاماً لقبول الدعوى.'},
-
-    {id:'PM02',axis:'المسطرة المدنية',difficulty:'hard',
-     question:'ما هي البيانات الأساسية في عريضة الدعوى؟',
-     options:['اسم المدعي','اسم المدعى عليه','موضوع الدعوى','شهادة الشهود'],
-     correct:[0,1,2],
-     explanation:'العريضة يجب أن تتضمن أطراف الدعوى وموضوعها، ولا تشترط شهادة الشهود فيها.'},
-
-    {id:'PM03',axis:'المسطرة المدنية',difficulty:'hard',
-     question:'ما هي شروط صحة التبليغ في المسطرة المدنية؟',
-     options:['الكتابة','التوقيع','تاريخ التبليغ','حضور الخصم'],
-     correct:[0,1,2],
-     explanation:'التبليغ الصحيح يتطلب الكتابة والتوقيع والتاريخ، ولا يشترط حضور الخصم.'},
-
-    {id:'PM04',axis:'المسطرة المدنية',difficulty:'very_hard',
-     question:'ما هي أسباب انقطاع الخصومة؟',
-     options:['وفاة أحد الخصوم','فقدان الأهلية','زوال الصفة','غياب المحامي'],
-     correct:[0,1,2],
-     explanation:'انقطاع الخصومة يحدث بوفاة الخصم أو فقدان الأهلية أو زوال الصفة، لا بمجرد غياب المحامي.'},
-
-    {id:'PM05',axis:'المسطرة المدنية',difficulty:'hard',
-     question:'ما هي شروط الطعن بالاستئناف في المسطرة المدنية؟',
-     options:['أجل محدد','قابلية الحكم للاستئناف','تقديم عريضة','موافقة الخصم'],
-     correct:[0,1,2],
-     explanation:'الاستئناف يتطلب أجلًا وقابلية الحكم وعريضة، ولا يشترط موافقة الخصم.'},
-
-    {id:'PM06',axis:'المسطرة المدنية',difficulty:'very_hard',
-     question:'ما هي طرق الإثبات في القانون المدني؟',
-     options:['الكتابة','الشهادة','القرائن','اليمين'],
-     correct:[0,1,2,3],
-     explanation:'الإثبات المدني يشمل الكتابة والشهادة والقرائن واليمين، مع اختلاف شروط كل دليل.'},
-
-    {id:'PM07',axis:'المسطرة المدنية',difficulty:'very_hard',
-     question:'ما هي شروط الحكم الغيابي؟',
-     options:['عدم حضور المدعى عليه','تبليغ صحيح','انعقاد الخصومة','حضور المدعي'],
-     correct:[0,1,2],
-     explanation:'الحكم الغيابي يتطلب عدم حضور المدعى عليه مع تبليغ صحيح وانعقاد الخصومة، ولا يشترط حضور المدعي.'},
-
-    {id:'PM08',axis:'المسطرة المدنية',difficulty:'very_hard',
-     question:'ما هي شروط الدفع بعدم الاختصاص؟',
-     options:['إثارته قبل أي دفع','بيان سببه','تقديم مستندات','موافقة الخصم'],
-     correct:[0,1,2],
-     explanation:'الدفع بعدم الاختصاص يجب إثارته قبل أي دفع آخر مع بيان سببه وتقديم المستندات، ولا يتطلب موافقة الخصم.'},
-
-    {id:'PM09',axis:'المسطرة المدنية',difficulty:'very_hard',
-     question:'ما هي شروط التدخل في الدعوى؟',
-     options:['مصلحة','صفة','ارتباط النزاع','موافقة الأطراف'],
-     correct:[0,1,2],
-     explanation:'التدخل يتطلب مصلحة وصفة وارتباطاً بالنزاع، ولا يشترط موافقة الأطراف.'},
-
-    {id:'PM10',axis:'المسطرة المدنية',difficulty:'very_hard',
-     question:'ما هي آثار الاستئناف؟',
-     options:['وقف التنفيذ','إعادة النظر','الأثر الناقل','إلغاء الحكم تلقائياً'],
-     correct:[0,1,2],
-     explanation:'الاستئناف قد يوقف التنفيذ ويعيد النظر وينقل النزاع، لكنه لا يلغي الحكم تلقائياً.'}
+/* =========================================================
+   بنك الأسئلة — 100 سؤال
+   البنية: {q: السؤال, o:[الخيارات], a: رقم الإجابة الصحيحة, e: التعليل}
+   ========================================================= */
+const QUESTIONS = [
+
+/* ===================== (1–40) قانون المرافعات: نطاق، إعلان، مواعيد، بطلان، اختصاص، دعوى ===================== */
+
+{q:"وفقاً للمادة (1) من قانون المرافعات، تسري قوانين المرافعات على ما لم يكن قد فُصل فيه من الدعاوى أو تم من الإجراءات قبل العمل بها، ويُستثنى من ذلك:",
+ o:["القوانين المعدلة للاختصاص متى كان تاريخ العمل بها بعد إقفال باب المرافعة في الدعوى",
+    "القوانين المعدلة للمواعيد متى كان الميعاد قد بدأ قبل تاريخ العمل بها",
+    "القوانين المنظمة لطرق الطعن بالنسبة لما صدر من أحكام قبل تاريخ العمل بها متى كانت ملغاة أو منشئة لطريق من تلك الطرق",
+    "القوانين التي تُعدِّل من شكل الإجراءات التي تمت صحيحة قبل العمل بها"],
+ a:3, e:"المادة (1) حصرت الاستثناءات في الحالات الثلاث الأولى فقط، أما الإجراءات التي تمت صحيحة فيحكمها مبدأ المادة (2) التي تقرر بقاءها صحيحة."},
+
+{q:"القاعدة التي تقرر أن كل إجراء من إجراءات المرافعات تم صحيحاً في ظل قانون معمول به يبقى صحيحاً ولو تغيّر هذا القانون، منصوص عليها في:",
+ o:["المادة (1)","المادة (2)","المادة (3)","المادة (21)"],
+ a:1, e:"المادة (2) — الإجراءات المعمول بها: يبقى الإجراء صحيحاً ما لم ينص على غير ذلك، ولا يُستحدث من مواعيد السقوط إلا من تاريخ العمل بالقانون الذي استحدثها."},
+
+{q:"يختص القضاء الليبي بنظر الدعاوى التي تُرفع على الأجنبي في الأحوال الآتية، ما عدا حالة واحدة:",
+ o:["إذا كان مقيماً في البلاد أو له فيها موطن مختار أو وكيل له حق المثول أمام المحاكم",
+    "إذا كانت الدعوى متعلقة بعقار كائن خارج ليبيا",
+    "إذا كانت الدعوى ناشئة عن عقد أُبرم في ليبيا أو نُفِّذ فيها أو كان مشروطاً تنفيذه فيها",
+    "إذا كانت الدعوى متعلقة بإرث لمواطن ليبي أو بتركة افتُتحت في ليبيا"],
+ a:1, e:"المادة (3) اشترطت أن تكون الدعوى متعلقة بعقار موجود في ليبيا (أو بعقار خارج ليبيا مع رضا الأجنبي بأحكام القضاء الليبي)، فمجرد تعلق الدعوى بعقار في الخارج ليس سبباً لاختصاص القضاء الليبي."},
+
+{q:"لا يُقبل أي طلب أو دفع لا يكون لصاحبه فيه مصلحة قائمة يقرها القانون، ومع ذلك تُقبل المصلحة المحتملة إذا كان الغرض من الطلب:",
+ o:["الحصول على تعويض مالي كبير",
+    "الاحتياط لدفع ضرر محقق أو الاستيثاق لحق يخشى زوال دليله عند النزاع فيه",
+    "مجرد إثبات الحق دون طلب تنفيذه",
+    "تأخير الفصل في الدعوى"],
+ a:1, e:"المادة (4) — شرط توافر المصلحة."},
+
+{q:"لمن يختصم باعتباره وارثاً أن يطلب تأجيل الدعوى حتى ينقضي الميعاد المحدد في قانون بلده لقبول الصفة التي اختصم بها، ويجوز ذلك للزوجة:",
+ o:["من تاريخ رفع الدعوى مباشرة",
+    "بعد انتهاء المشاركة في الأموال بسبب الوفاة أو الطلاق أو الفرقة",
+    "فقط عند وجود أولاد قُصَّر",
+    "فقط إذا كانت الدعوى متعلقة بعقار"],
+ a:1, e:"المادة (5) — تأجيل الدعوى، ولا يخل هذا الطلب بحق الطالب في إبداء ما لديه من الدفوع بعد انتهاء الأجل."},
+
+{q:"إذا نص القانون على ميعاد حتمي لرفع دعوى أو طعن أو أي إجراء آخر يحصل بالإعلان، فإن الميعاد:",
+ o:["يُعتبر مرعياً ولو تم إعلان الخصم بعد انقضائه ما دامت الدعوى قد رُفعت",
+    "لا يُعتبر مرعياً إلا إذا تم إعلان الخصم خلاله",
+    "يُحسب من تاريخ صدور الحكم في جميع الأحوال",
+    "يُحسب من تاريخ تسجيل السند التنفيذي"],
+ a:1, e:"المادة (6) — شرط الإعلان."},
+
+{q:"لا يجوز إجراء أي إعلان أو تنفيذ قبل الساعة السابعة صباحاً ولا بعد السابعة مساءً ولا في أيام العطلة الرسمية، ويُستثنى من ذلك:",
+ o:["حالات الضرورة وبإذن كتابي من قاضي الأمور الوقتية",
+    "موافقة الخصم الآخر الشفهية",
+    "إذن النيابة العامة",
+    "إذن رئيس المحكمة الابتدائية"],
+ a:0, e:"المادة (8) — وقت الإعلان."},
+
+{q:"من البيانات التي يجب أن تشتمل عليها الأوراق المراد إعلانها:",
+ o:["اسم القائم بالإعلان وصفته ودائرته فقط",
+    "تاريخ اليوم والشهر والسنة والساعة التي حصل فيها الإعلان، واسم الطالب وموطنه، واسم المعلن إليه وموطنه، واسم القائم بالإعلان وصفته",
+    "رقم القضية واسم وكيل الخصم فقط",
+    "قيمة الدعوى ومقدار الرسوم المستحقة"],
+ a:1, e:"المادة (10) — محتويات الإعلان (البنود 1 إلى 4)، مع إلزام القائم بالإعلان بإثبات اسم من تسلّم الإعلان وصفته وتوقيعه."},
+
+{q:"إذا لم يجد القائم بالإعلان الشخص المطلوب إعلانه في موطنه، ولم يجد وكيله ولا من يساكنه من أزواجه أو أقاربه أو أصهاره، فإنه يسلّم الصورة إلى:",
+ o:["النيابة العامة مباشرة",
+    "أقرب قسم شرطة",
+    "فرع أو شعبة الأمن الشعبي المحلي أو اللجنة الشعبية للمؤتمر الشعبي الأساسي التي يقع موطن المطلوب إعلانه في دائرتها",
+    "قلم كتاب المحكمة المرفوع إليها النزاع"],
+ a:2, e:"المادة (12) — تسليم الأوراق لغير المعلن إليه، مع وجوب توجيه كتاب بالبريد المسجل إلى المعلن إليه خلال أربع وعشرين ساعة."},
+
+{q:"فيما يتعلق بالأشخاص الذين لهم موطن معلوم في الخارج، تُسلَّم صورة الإعلان إلى:",
+ o:["سفارة بلد المعلن إليه في ليبيا",
+    "النيابة العامة لتوصيلها بالطرق الدبلوماسية، ويجوز الإعلان بالبريد المسجل أو المبرق المباشر إذا كان بلد الموطن يأخذ بهذا النظام",
+    "قلم كتاب المحكمة الابتدائية",
+    "الشرطة الدولية (الإنتربول)"],
+ a:1, e:"المادة (14) البند (8) — أحوال خاصة بالإعلان."},
+
+{q:"لا يُحسب من الميعاد المقدَّر بالأيام أو بالشهور أو بالسنين:",
+ o:["اليوم الأول فقط",
+    "يوم التكليف بالحضور أو التنبيه أو حدوث الأمر المعتبر في نظر القانون مجرياً للميعاد",
+    "يوم العطلة الرسمية الواقع فيه الإعلان",
+    "يوم صدور الحكم"],
+ a:1, e:"المادة (16) — حساب المواعيد، وتُحسب المواعيد المعينة بالشهر والسنة بالتقويم الميلادي ما لم ينص القانون على غير ذلك."},
+
+{q:"تُزاد المواعيد المحددة للحضور أو لمباشرة إجراء بسبب المسافات بمقدار يوم واحد لكل مسافة قدرها:",
+ o:["خمسة عشر كيلو متراً","عشرون كيلو متراً","خمسة وعشرون كيلو متراً","خمسون كيلو متراً"],
+ a:2, e:"المادة (17) — وما زاد من الكسور على خمسة عشر كيلو متراً يُزاد له يوم على الميعاد، ولا يجوز بأية حال أن يتجاوز ميعاد المسافة ثمانية أيام."},
+
+{q:"ميعاد المسافة بالنسبة لمن يقع موطنه في مناطق الحدود وللساكنين في الدواخل هو:",
+ o:["عشرة أيام","خمسة عشر يوماً","عشرون يوماً","ثلاثون يوماً"],
+ a:2, e:"المادة (17) — مواعيد المسافة، وللقاضي بناءً على طلب ذوي الشأن أن يحدد مواعيد الحضور باعتبار المسافات ووسائل المواصلات."},
+
+{q:"مواعيد المسافة لمن يكون موطنهم في الخارج هي على الترتيب:",
+ o:["15 يوماً لبلدان البحر المتوسط، 30 يوماً لبلدان أوروبا، 60 يوماً للبلدان الأخرى",
+    "30 يوماً لبلدان البحر المتوسط، 60 يوماً لبلدان أوروبا، 150 يوماً للبلدان الأخرى",
+    "20 يوماً لبلدان البحر المتوسط، 40 يوماً لبلدان أوروبا، 90 يوماً للبلدان الأخرى",
+    "30 يوماً لبلدان البحر المتوسط، 90 يوماً لبلدان أوروبا، 180 يوماً للبلدان الأخرى"],
+ a:1, e:"المادة (18) — مواعيد المسافة للمتوطنين في الخارج، ويجوز بأمر من قاضي الأمور الوقتية نقص هذه المواعيد تبعاً لسهولة المواصلات وظروف الاستعجال."},
+
+{q:"إذا صادف آخر الميعاد عطلة رسمية:",
+ o:["سقط الميعاد","يُحسب الميعاد من اليوم التالي","امتد الميعاد إلى أول يوم عمل بعدها","يُحسب من تاريخ انتهاء العطلة بأسبوع"],
+ a:2, e:"المادة (19) — العطالت الرسمية: تدخل في الميعاد، وإذا صادف آخر الميعاد عطلة رسمية امتد إلى أول يوم عمل بعدها."},
+
+{q:"يترتب البطلان على عدم مراعاة المواعيد والإجراءات المنصوص عليها في المواد:",
+ o:["1 و2 و3 من القانون","7 و8 و10 و11 و12 و14 و16 و17 و18 و19 من القانون","20 و21 و22 من القانون","23 و24 و25 من القانون"],
+ a:1, e:"المادة (20) — عدم مراعاة المواعيد والإجراءات المتقدمة."},
+
+{q:"يكون الإجراء باطلاً:",
+ o:["في جميع الأحوال متى خالف القانون ولو لم يترتب عليه ضرر",
+    "إذا نص القانون على بطلانه أو إذا شابه عيب جوهري ترتب عليه ضرر للخصم",
+    "فقط إذا اعترض الخصم في أول جلسة",
+    "فقط إذا ترتب عليه ضرر مالي محقق"],
+ a:1, e:"المادة (21) — بطلان الإجراء."},
+
+{q:"يزول البطلان إذا نزل عنه من شُرِع لمصلحته أو إذا ردَّ على الإجراء بما يدل على أنه اعتبره صحيحاً، ويُستثنى من ذلك:",
+ o:["الحالات التي يتعلق فيها البطلان بالنظام العام",
+    "الحالات التي يكون فيها البطلان نسبياً",
+    "الدعاوى التجارية",
+    "الدعاوى التي تنظرها المحكمة الجزئية"],
+ a:0, e:"المادة (22) — زوال البطلان."},
+
+{q:"يجب أن يحضر مع القاضي في الجلسات وفي جميع إجراءات الإثبات كاتب يتولى تحرير المحضر والتوقيع عليه مع القاضي، وإلا كان العمل:",
+ o:["صحيحاً وقابلاً للتصحيح","باطلاً","موقوفاً على إجازة رئيس المحكمة","غير نافذ مؤقتاً"],
+ a:1, e:"المادة (23) — كاتب المحكمة، وهذه من أهم الأحكام بالنسبة لكاتب الضبط."},
+
+{q:"لا يجوز للمحضرين ولا للكتّبة وغيرهم من أعوان القضاء أن يباشروا عملاً يدخل في حدود وظائفهم في الدعاوى الخاصة بهم أو بأزواجهم أو أقاربهم أو أصهارهم حتى الدرجة:",
+ o:["الثانية","الثالثة","الرابعة","السادسة"],
+ a:2, e:"المادة (24) — حرمان أعوان القضاء من مباشرة أعمالهم في حالات خاصة، وإلا كان هذا العمل باطلاً."},
+
+{q:"في الأحوال التي يعين فيها القانون اختصاص المحكمة على أساس قيمة موضوع الدعوى، تُقدَّر هذه القيمة باعتبارها:",
+ o:["يوم صدور الحكم","يوم رفع الدعوى","يوم إعلان صحيفة الدعوى","يوم إقفال باب المرافعة"],
+ a:1, e:"المادة (27) — تقدير قيمة موضوع الدعوى، ويدخل في التقدير ما يكون مستحقاً يومئذ من الفوائد والتضمينات والمصاريف وغيرها من الملحقات."},
+
+{q:"تُقدَّر الدعاوى المتعلقة بالمباني باعتبار قيمتها:",
+ o:["مائة ضعف لقيمة الضريبة المربوطة عليها",
+    "مائة وثمانين ضعفاً لقيمة الضريبة المربوطة عليها",
+    "ستين ضعفاً لقيمة الضريبة المربوطة عليها",
+    "أربعة أخماس قيمة العقار"],
+ a:1, e:"المادة (28) — تقدير قيمة العقار: مائة وثمانون ضعفاً للمباني، وستون ضعفاً للأراضي."},
+
+{q:"الدعاوى المتعلقة بحق الارتفاق تُقدَّر قيمتها باعتبار:",
+ o:["نصف قيمة العقار المقرر عليه الحق","ربع قيمة العقار المقرر عليه الحق","كامل قيمة العقار","ثلث قيمة العقار"],
+ a:1, e:"المادة (29) — حق الارتفاق والانتفاع والرقبة: إذا كانت الدعوى متعلقة بحق انتفاع أو بالرقبة قُدِّرت باعتبار نصف قيمة العقار."},
+
+{q:"إذا كانت الدعوى خاصة بإيراد مؤيَّد فتُقدَّر عند المنازعة في سند ترتيبه على أساس:",
+ o:["مرتب عشر سنوات","مرتب عشرين سنة","مرتب خمس عشرة سنة","مرتب ثلاثين سنة"],
+ a:1, e:"المادة (32) — الإيراد: يُقدَّر على أساس مرتب عشرين سنة إن كان مؤيداً، وعلى أساس مرتب عشر سنين إن كان لمدى الحياة."},
+
+{q:"إذا كانت الدعوى بصحة الإيجار كان التقدير باعتبار:",
+ o:["أجرة سنة واحدة","أجرة المدة الباقية فقط","مجموع الأجرة عن مدة الإيجار كلها","أجرة ثلاثة أشهر"],
+ a:2, e:"المادة (35) — الإيجار، وإذا كانت الدعوى بفسخ الإيجار وقُدِّرت على أساس تسعة أضعاف الأجرة السنوية متى زادت المدة على تسع سنين."},
+
+{q:"إذا كانت الدعوى بطلب غير قابل للتقدير بحسب القواعد المتقدمة، اعتُبرت قيمتها:",
+ o:["مساوية لألف دينار تماماً",
+    "زائدة على ألف دينار إلا إذا نص القانون على غير ذلك",
+    "مائة دينار",
+    "غير محددة ويُحال الأمر إلى الخبير"],
+ a:1, e:"المادة (41) — الدعوى غير القابلة للتقدير."},
+
+{q:"تختص المحكمة الجزئية بالحكم ابتدائياً في الدعاوى المدنية والتجارية التي لا تتجاوز قيمتها:",
+ o:["خمسمائة دينار","ألف دينار","ألفين دينار","مائة دينار"],
+ a:1, e:"المادة (42) — الاختصاص العام للمحكمة الجزئية، ويكون حكمها نهائياً إذا لم تجاوز قيمة الدعوى مائة دينار."},
+
+{q:"تختص المحكمة الجزئية بالحكم في دعاوى المطالبة بأجرة المباني أو الأراضي إذا كانت الأجرة لا تزيد على:",
+ o:["مائة دينار في السنة","مائتين وخمسين ديناراً في السنة","خمسمائة دينار في السنة","ألف دينار في السنة"],
+ a:1, e:"المادة (43) البند (1) — اختصاصات أخرى للمحكمة الجزئية."},
+
+{q:"لا يجوز أن يجمع المدعي في دعوى الحيازة بينها وبين المطالبة بالحق، وإلا:",
+ o:["تُحال الدعوى إلى المحكمة الابتدائية","سقط ادعاؤه بالحيازة","تُوقف الدعوى حتى الفصل في الحق","تُعتبر الدعوى كأن لم تكن"],
+ a:1, e:"المادة (45) — دفوع محظورة في دعاوى الحيازة."},
+
+{q:"تختص المحكمة الجزئية اختصاصاً نهائياً في الأحوال الشخصية في:",
+ o:["دعاوى الإرث بجميع أسبابه وموائعه",
+    "النفقة عن مدة سابقة على رفع الدعوى إذا زاد مجموع ما طُلب على مائة دينار",
+    "المهر والجهاز إذا كان ما يستحقه الطالب لا يزيد على مائة دينار أو كانت قيمة المهر أو الجهاز لا تزيد على خمسمائة دينار",
+    "دعاوى الحضانة والحفظ وما يتعلق بهما"],
+ a:2, e:"المادة (46) البند (2) — اختصاص نهائي في الأحوال الشخصية."},
+
+{q:"تختص المحكمة الجزئية اختصاصاً ابتدائياً في الأحوال الشخصية في:",
+ o:["الصلح بين الخصمين أمام المحكمة",
+    "حق الحضانة والحفظ وما يتعلق بهما",
+    "التوكيل فيما ذُكر من أحد الخصوم",
+    "المهر والجهاز إذا لم يزد المستحق على مائة دينار"],
+ a:1, e:"المادة (47) البند (1) — اختصاص ابتدائي في الأحوال الشخصية، وتكون الأحكام الصادرة في النفقات نافذة مؤقتاً ولو حصل الطعن فيها بالاستئناف."},
+
+{q:"إذا عُرض على المحكمة الجزئية طلب ضمان أو طلب عارض تجاوز نصاب اختصاصها، فإنها:",
+ o:["تحكم فيه وجوباً ولو تجاوز نصابها",
+    "تحكم في الدعوى الأصلية وحدها إذا لم يترتب على ذلك ضرر بسير العدالة، وإلا وجب عليها أن تحكم من تلقاء نفسها بإحالة الدعوى الأصلية والطلبات العارضة بحالتها إلى المحكمة الابتدائية المختصة، وحكم الإحالة غير قابل للاستئناف",
+    "ترفض الطلب العارض دائماً",
+    "توقف الدعوى حتى يُرفع الطلب أمام المحكمة المختصة"],
+ a:1, e:"المادة (48) — الضمان والطلبات العارضة."},
+
+{q:"يكون قرار المحكمة الابتدائية في تصرفات الأوقاف نهائياً فيما يأتي:",
+ o:["الإذن بالخصوصة، وطلب الاستدانة إذا كان المبلغ المطلوب لا يزيد على مائة دينار، والمعاوضة والبيع لمصلحة الوقف، والتحكير والتأجير لمدة طويلة وتغيير المعالم إذا كانت قيمة العين لا تزيد على مائة دينار",
+    "جميع تصرفات الأوقاف دون استثناء",
+    "فقط الإذن بالخصوصة",
+    "فقط المعاوضة والبيع لمصلحة الوقف"],
+ a:0, e:"المادة (50) — الوقف، ويكون قرارها ابتدائياً قابلاً للاستئناف فيما عدا ذلك."},
+
+{q:"في دعاوى الحقوق الشخصية أو المنقولة وكذلك في مواد الأحوال الشخصية، يكون الاختصاص للمحكمة التي يقع في دائرتها:",
+ o:["مكان إبرام العقد",
+    "موطن المدعى عليه، فإن لم يكن له موطن بليبيا فالمحكمة التي يقع بدائرتها سكنه",
+    "موطن المدعي دائماً",
+    "مكان وقوع الضرر"],
+ a:1, e:"المادة (53) — وإذا تعدد المدعى عليهم كان الاختصاص للمحكمة التي يقع بدائرتها موطن أحدهم."},
+
+{q:"في الدعاوى العينية العقارية ودعاوى الحيازة يكون الاختصاص للمحكمة التي يقع في دائرتها:",
+ o:["موطن المدعى عليه",
+    "العقار أو أحد أجزائه إذا كان واقعاً في دوائر محاكم متعددة",
+    "مكان إبرام العقد",
+    "موطن المدعي"],
+ a:1, e:"المادة (54) — أما في الدعاوى الشخصية العقارية فالاختصاص للمحكمة التي يقع في دائرتها العقار أو موطن المدعى عليه."},
+
+{q:"في الدعاوى الجزئية التي تُرفع على الحكومة أو المجالس البلدية أو غيرها من الهيئات العامة، يكون الاختصاص للمحكمة الجزئية التي:",
+ o:["يقع في دائرتها موطن المدعي",
+    "يكون في دائرتها مقر المحكمة الابتدائية",
+    "يقع في دائرتها مكان وقوع الضرر",
+    "يقع في دائرتها مقر الوزارة المعنية"],
+ a:1, e:"المادة (55) — الدعاوى ضد الهيئات العامة، مع مراعاة القواعد المتقدمة."},
+
+{q:"في المنازعات المتعلقة بطلب قيمة مبلغ التأمين، يكون الاختصاص للمحكمة التي يقع في دائرتها:",
+ o:["موطن شركة التأمين دائماً",
+    "موطن الشخص المؤمَّن له أو مكان المال المؤمَّن عليه",
+    "مكان وقوع الحادث المؤمَّن منه",
+    "موطن المستفيد من التأمين"],
+ a:1, e:"المادة (62) — التأمين."},
+
+{q:"في الدعاوى المتضمنة طلب اتخاذ إجراء وقتي، يكون الاختصاص للمحكمة التي يقع في دائرتها:",
+ o:["موطن المدعي",
+    "موطن المدعى عليه أو المحكمة المطلوب حصول الإجراء في دائرتها",
+    "مكان وقوع الضرر",
+    "المحكمة التي أصدرت الحكم المطعون فيه"],
+ a:1, e:"المادة (63) — الإجراءات المؤقتة والمستعجلة، وفي المنازعات المستعجلة المتعلقة بتنفيذ الأحكام والسندات يكون الاختصاص للمحكمة التي يقع في دائرتها التنفيذ."},
+
+{q:"يجوز للمدعى عليه في طلب الضمان أن يتمسك بعدم اختصاص المحكمة إذا أثبت أن:",
+ o:["الدعوى الأصلية لم تُرفع إلا بقصد جبله أمام محكمة غير محكمته",
+    "الضمان يتجاوز قيمته نصاب المحكمة",
+    "المدعي لا يملك سنداً تنفيذياً",
+    "الضمان مؤجل الأداء"],
+ a:0, e:"المادة (64) — الطلبات العارضة."},
+
+{q:"إذا كانت الدعوى موجهة ضد عدة أشخاص ووجب وفقاً لقواعد الاختصاص المحلي رفعها أمام محاكم مختلفة، جاز رفعها إلى المحكمة التي يقع في دائرتها محل إقامة أحدهم أو موطنه:",
+ o:["بشرط موافقة جميع المدعى عليهم",
+    "إذا وُجد ارتباط بين الدعاوى من حيث الموضوع أو السند",
+    "بشرط ألا تتجاوز القيمة ألف دينار",
+    "بشرط أن يكون المدعي مقيماً في الدائرة"],
+ a:1, e:"المادة (71) — وإذا رُفعت الدعاوى إلى عدة محاكم جاز الأمر بضمها ونظرها أمام المحكمة التي رُفعت إليها أول دعوى، وإذا اختلفت القيم رُفعت كدعوى واحدة إلى المحكمة المختصة بأكبرهما قيمة."},
+
+{q:"إذا رُفعت دعوى واحدة إلى عدة محاكم، فعلى آخر محكمة رُفعت إليها أن:",
+ o:["تنظر الدعوى وتفصل فيها مباشرة",
+    "تحكم ولو من تلقاء نفسها بوقف السير في الدعوى في أي حال أو درجة كانت عليها، وأن تأمر بشطبها من الجدول لسبق رفعها أمام محكمة أخرى",
+    "تحيل الدعوى إلى المحكمة العليا",
+    "تطلب من المدعي اختيار المحكمة التي يريدها"],
+ a:1, e:"المادة (77) — رفع الدعوى الواحدة لعدة محاكم، مع بيان أحكام حالة الاشتمال."},
+
+{q:"لا يجوز رفع أي دعوى أمام القضاء العادي للمطالبة باستحقاق أو تثبيت ملكية عقار أو أية حقوق عقارية أخرى ما لم:",
+ o:["يُرفق بها تقرير خبير",
+    "تُقدَّم معها شهادة من المكتب المختص في دائرة الأملاك بأن العقار موضوع النزاع ليس محلاً لإجراءات تحقيق الملكية",
+    "تُوافق النيابة العامة",
+    "تُسجَّل في دائرة الأملاك أولاً"],
+ a:1, e:"المادة (79) — الدعاوى العينية، وفي حالة قيام الدعوى لا يجوز لدائرة الأملاك أن تتخذ أي إجراء بشأن طلبات تحقيق الملكية حتى يصدر حكم حائز لقوة الشيء المقضي به."},
+
+{q:"تُرفع الدعوى إلى المحكمة بناءً على طلب المدعي بصحيفة تُعلَن للمدعي عليه:",
+ o:["بالبريد المسجل دائماً",
+    "على يد أحد المحضرين ما لم يقض القانون بغير ذلك",
+    "بواسطة النيابة العامة",
+    "بواسطة الشرطة القضائية"],
+ a:1, e:"المادة (80) — رفع الدعوى."},
+
+{q:"ميعاد الحضور أمام المحكمة الابتدائية ومحكمة الاستئناف يكون:",
+ o:["ثلاثة أيام على الأقل في الدعوى المدنية وثمانية أيام في الدعاوى التجارية",
+    "ثمانية أيام على الأقل في الدعوى المدنية وثلاثة أيام في الدعاوى التجارية، وثلاثة أيام أمام المحكمة الجزئية",
+    "خمسة عشر يوماً في جميع الأحوال",
+    "شهراً كاملاً"],
+ a:1, e:"المادة (83) — ميعاد الحضور، ويجوز في حال الضرورة نقص هذه المواعيد إلى ثلاثة أيام وإلى أربع وعشرين ساعة."},
+
+{q:"يكون نقص المواعيد المشار إليها بأمر من:",
+ o:["رئيس المحكمة",
+    "قاضي الأمور الوقتية، وتُعلن صورته للخصم مع صحيفة الدعوى",
+    "النيابة العامة",
+    "قاضي التحقيق"],
+ a:1, e:"المادة (84) — نقص المواعيد."},
+
+{q:"إذا لم تُقيَّد الدعوى في الجدول خلال أربعة أشهر من تاريخ الجلسة الأولى السابق تحديدها لنظرها:",
+ o:["تُحال إلى محكمة أخرى",
+    "تُعتبر الدعوى كأن لم تكن",
+    "تُوقف حتى يطلب المدعي السير فيها",
+    "يُحكم فيها غيابياً"],
+ a:1, e:"المادة (87) — أثر عدم قيد الدعوى، ويجوز للمدعي أن يطلب قيد الدعوى يوم الجلسة بتقديم الصورة المعلنة."},
+
+{q:"إذا كان الخطأ أو النقص في بيانات صحيفة افتتاح الدعوى من شأنه أن يُجهِّل بالمحكمة أو بالمدعي أو بالمدعى عليه أو بتاريخ الجلسة:",
+ o:["تُصحَّح الصحيفة تلقائياً من قلم الكتاب","بطلت الصحيفة","تُؤجَّل الجلسة","يُحكم بعدم الاختصاص"],
+ a:1, e:"المادة (88) — بطلان صحيفة افتتاح الدعوى، ويجوز الحكم بالبطلان بالنسبة لما عدا ذلك من البيانات."},
+
+{q:"بطلان أوراق التكليف بالحضور الناشئ عن عيب في الإعلان أو في بيان المحكمة أو تاريخ الجلسة أو عن عدم مراعاة مواعيد الحضور:",
+ o:["لا يزول بأي حال من الأحوال",
+    "يزول بحضور المعلن إليه، وذلك بغير إخلال بحقه في التأجيل لاستكمال ميعاد الحضور",
+    "يزول فقط إذا تنازل المدعي كتابةً",
+    "يزول بحكم تصدره المحكمة"],
+ a:1, e:"المادة (90) — أثر حضور المعلن إليه."},
+
+{q:"الدفع ببطلان أوراق التكليف بالحضور يجب إبداؤه:",
+ o:["في أي مرحلة من مراحل الدعوى ولو أمام محكمة النقض",
+    "قبل الدفع بعدم قبول الدعوى وقبل أي طلب أو دفاع في الدعوى، وإلا سقط الحق فيه، ويجب إبداؤه في صحيفة الاستئناف وإلا سقط الحق فيه كذلك",
+    "بعد تقديم المستندات وقبل المرافعة",
+    "أمام محكمة الاستئناف فقط"],
+ a:1, e:"المادة (91) — الدفع ببطلان أوراق التكليف بالحضور."},
+
+{q:"يجوز أن يُعطى التوكيل في الجلسة بتقرير يُدوَّن بمحضرها، وحينئذ:",
+ o:["يجب تصديق التوقيع من المحكمة",
+    "يقوم التقرير مقام التصديق على توقيع الموكل",
+    "يبقى التوكيل غير نافذ",
+    "يجب إعادة التوكيل كتابةً في جلسة تالية"],
+ a:1, e:"المادة (93) — إثبات الوكالة."},
+
+{q:"بمجرد صدور التوكيل من أحد الخصوم يكون موطن وكيله معتبراً في إعلان الأوراق اللازمة لسير الدعوى في درجة التقاضي الموكل هو فيها، وذلك:",
+ o:["في جميع الأحوال بلا استثناء",
+    "فيما عدا الحالات التي يوجب فيها القانون الإعلان إلى الخصم شخصياً",
+    "فقط في الدعاوى التجارية",
+    "فقط أمام المحكمة العليا"],
+ a:1, e:"المادة (94) — اعتماد موطن الوكيل."},
+
+{q:"لا يجوز لأحد قضاة المحاكم ولا للنائب العام ولا لأحد من وكلائه ولا لأحد من الموظفين بالمحاكم أن يكون وكيلاً عن الخصوم في الحضور أو المرافعة:",
+ o:["في جميع الأحوال ولو كان الخصم من أقاربه من الدرجة الأولى",
+    "سواء أكان بالمشافهة أم بالكتابة أم بالإفتاء، ولو كانت الدعوى مقامة أمام محكمة غير المحكمة التابع هو لها، ولكن يجوز لهم ذلك عمن يمثلونهم قانوناً وزوجاتهم وأصولهم وفروعهم إلى الدرجة الثانية",
+    "فقط أمام نفس المحكمة التابع لها",
+    "فقط في الدعاوى الجنائية"],
+ a:1, e:"المادة (101) — حظر توكيل رجال القضاء."},
+
+{q:"إذا لم يحضر المدعي ولا المدعى عليه في الجلسة الأولى، وقررت المحكمة بعد التأكد من صحة الإعلان شطب الدعوى، ثم لم يطلب المدعي السير فيها بعد الشطب مدة تزيد على:",
+ o:["ثلاثين يوماً","ستين يوماً","تسعين يوماً","سنة كاملة"],
+ a:1, e:"المادة (102) — غياب المدعي، وتُعتبر الدعوى في هذه الحالة كأن لم تكن."},
+
+{q:"الأمر بالاستجواب أو اليمين والمذكرات المشتملة على طلبات جديدة أو ردود تُعلَن شخصياً إلى المتغيب في المواعيد التي تحددها المحكمة، أما المذكرات الأخرى فتُعتبر مبلغة:",
+ o:["بمجرد إيداعها قلم الكتاب وتأشير المسجل على الأصل",
+    "بعد إعلان شخصي إليها",
+    "بالبريد المسجل",
+    "بعد موافقة الخصم الآخر"],
+ a:0, e:"المادة (104) — الإعلان، وتُعلَن الأحكام شخصياً إلى الخصم المتغيب."},
+
+{q:"على النيابة العامة أن تتدخل في كل قضية تتعلق بالأحوال الشخصية للأجانب أو بالجنسية أو الأحوال الأخرى التي ينص القانون على وجوب التدخل فيها:",
+ o:["ويجوز لها عدم التدخل إذا رأت ذلك",
+    "وإلا كان الحكم باطلاً",
+    "ويُعتبر الحكم صحيحاً مع الإثم",
+    "ويُوقف الحكم حتى تتدخل"],
+ a:1, e:"المادة (107) — وجوب تدخل النيابة."},
+
+/* ===================== (41–55) الأحكام والطعن والإثبات والجلسات ===================== */
+
+{q:"للمحكمة الابتدائية أن تحاول الصلح عندما ترى فيه الفائدة، وتحقيقاً لهذا الغرض لها أن تأمر بحضور الخصوم شخصياً، وفي حالة الوصول إلى الصلح:",
+ o:["يُثبَّت في الحكم الصادر في الموضوع",
+    "يُحرَّر محضر بذلك يحوز قوة القرار التنفيذي",
+    "يجب تصديقه من المحكمة العليا",
+    "يُعلَن للخصوم رسمياً بالطرق الدبلوماسية"],
+ a:1, e:"المادة (116) — محاولة الصلح، وللمحكمة كلما استنسبت ذلك أن تجدد محاولات الصلح."},
+
+{q:"يجوز رفع الدعوى شفاهاً إلى المحكمة الجزئية إذا كانت قيمتها لا تزيد على:",
+ o:["خمسة دينارات","عشرة دينارات","عشرين ديناراً","مائة دينار"],
+ a:1, e:"المادة (124) — ويحرر القاضي الجزئي بتلك الدعوى محضراً، ويقوم المدعي بإعلان المدعى عليه بالحضور في جلسة تحدد لذلك."},
+
+{q:"يجب على الخصوم في الجلسة الأولى أن يبينوا وقائع وموضوع الدعوى وأن يقدموا كل ما يتعلق بها من الطلبات والدفوع وما اختاروه من وسائل الإثبات وأن يودعوا مستنداتهم الخاصة:",
+ o:["وإلا سقط الحق في ذلك ما لم يرَ القاضي تأجيل الدعوى لموعد قصير",
+    "ويجوز لهم تقديمها في أي مرحلة دون قيد",
+    "وإلا بطلت الدعوى",
+    "وإلا حُكم بعدم الاختصاص"],
+ a:0, e:"المادة (127) — بيان الوقائع والموضوع والدفوع."},
+
+{q:"الأصل في المرافعة أنها علنية، إلا إذا رأت المحكمة من تلقاء نفسها أو بناءً على طلب أحد الخصوم إجراءها سراً:",
+ o:["محافظة على النظام العام أو مراعاةً للآداب أو لحرمة الأسرة",
+    "لمصلحة الخصم المالية",
+    "لتخفيف العبء على المحكمة",
+    "لغياب الشهود"],
+ a:0, e:"المادة (130) — علنية الجلسات."},
+
+{q:"للخصوم أن يطلبوا إلى المحكمة في أية حال تكون عليها الدعوى إثبات ما اتفقوا عليه في محضر الجلسة ويوقع عليه منهم أو من وكلائهم، ويكون لمحضر الجلسة في هذه الحالة:",
+ o:["قوة الحكم الابتدائي","قوة السند التنفيذي واعتباره","قوة العقد الرسمي","قوة الإقرار القضائي فقط"],
+ a:1, e:"المادة (133) — إثبات ما اتفق عليه في محضر الجلسة، وتُعطى صورته وفقاً للقواعد المقررة لتسليم صور الأحكام."},
+
+{q:"ضبط الجلسة وإدارتها منوطة برئيسها، وله في سبيل ذلك أن يُخرج من قاعة الجلسة من يُخل بنظامها، فإن لم يمتثل وتمادى كان للمحكمة أن تحكم على الفور بحبسه:",
+ o:["ثمانياً وأربعين ساعة أو بتغريمه دينارين",
+    "أربعاً وعشرين ساعة أو بتغريمه ديناراً واحداً، ويكون حكمها بذلك غير جائز استئنافه",
+    "أسبوعاً أو بغرامة خمسة دنانير",
+    "شهراً أو بغرامة عشرة دنانير"],
+ a:1, e:"المادة (134) — ضبط الجلسة وإدارتها."},
+
+{q:"إذا لم يحضر الخصوم في اليوم المحدد لمباشرة الإثبات أو مواصلة السير فيه، قررت المحكمة:",
+ o:["تأجيل الإجراء لموعد آخر","سقوط الحق في ذلك","إحالة الدعوى إلى محكمة أخرى","بطلان الدعوى"],
+ a:1, e:"المادة (153) — إسقاط الحق لغياب الخصوم، ولصاحب الشأن أن يطلب في الجلسة التالية إلغاء الأمر القاضي بسقوط حقه إذا كان التخلف لأسباب خطيرة."},
+
+{q:"لا يجوز التوكيل في تأدية اليمين:",
+ o:["مطلقاً، فهي من الأعمال الشخصية التي لا تقبل النيابة",
+    "ويجوز التوكيل فيها بإذن المحكمة",
+    "ويجوز التوكيل فيها إذا كان الوكيل محامياً",
+    "ويجوز التوكيل فيها إذا كان الخصم مريضاً"],
+ a:0, e:"المادة (173) — التوكيل في تأدية اليمين، ويُحرَّر محضر بحلف اليمين يوقعه الحالف ورئيس المحكمة أو القاضي المنتدب والكاتب."},
+
+{q:"للمحكمة من تلقاء نفسها أو بناءً على طلب أحد الخصوم أن تقرر الانتقال لمعاينة المتنازع فيه، وتحرر المحكمة محضراً يبين فيه جميع الأعمال المتعلقة بالمعاينة، وإلا كان العمل:",
+ o:["قابلاً للتصحيح","باطلاً","موقوفاً على تصديق رئيس المحكمة","صحيحاً مع إثم"],
+ a:1, e:"المادة (175) — الانتقال للمعاينة."},
+
+{q:"إذا انقضت سنة من آخر إجراء صحيح من إجراءات التقاضي دون أن يسير المدعي في الدعوى، فلذي المصلحة من الخصوم أن يطلب:",
+ o:["الحكم بسقوط الخصومة","الحكم ببطلان الدعوى","إحالة الدعوى إلى التحكيم","شطب الدعوى فقط"],
+ a:0, e:"المادة (255) — طلب الحكم بسقوط الخصومة، على أنه في جميع الأحوال تنقضي الخصومة بمضي خمس سنوات على آخر إجراء صحيح فيها (المادة 261)."},
+
+{q:"في أحوال رد القاضي، يجب أن تُودَع العريضة الموقعة من الخصم أو وكيله قلم الكتاب قبل موعد الجلسة بيومين إذا كان طالب الرد عالماً باسم القاضي حين وُكِل إليه النظر في الدعوى، وإذا لم يكن يعلم:",
+ o:["تودع العريضة في الجلسة قبل البدء في نظر الدعوى أو بحثها",
+    "تودع بعد الجلسة الأولى",
+    "تودع أمام محكمة الاستئناف مباشرة",
+    "يسقط حقه في الرد"],
+ a:0, e:"المادة (268) — أحوال الرد، ويترتب على طلب الرد وقف الدعوى."},
+
+{q:"يجب أن يبين في الحكم المحكمة التي أصدرته وتاريخ إصداره ومكانه وأسماء القضاة الذين حضروا المرافعة واشتركوا في الحكم وعضو النيابة الذي أبدى رأيه إن وُجد، ويترتب على القصور في أسباب الحكم الواقعية أو النقص أو الخطأ الجسيم في أسماء الخصوم وصفاتهم، وكذلك عدم بيان أسماء القضاة:",
+ o:["بطلان الحكم","عدم نفاذ الحكم مؤقتاً","إحالة الحكم إلى المحكمة العليا","تصحيح الحكم إدارياً"],
+ a:0, e:"المادة (273) — محتويات الحكم."},
+
+{q:"تُسلَّم مسودة الحكم بعد أن يوقعها المقرر أو الرئيس إلى الكاتب المختص، وتودع الأحكام قلم الكتاب في مدة لا تتجاوز ثلاثين يوماً من تاريخ المداولة، أما أحكام القاضي الجزئي فالمدة:",
+ o:["عشرة أيام من آخر جلسة","عشرين يوماً من آخر جلسة","ثلاثين يوماً من تاريخ النطق","خمسة عشر يوماً من المداولة"],
+ a:1, e:"المادة (274) — مسودة الحكم."},
+
+{q:"يسقط الأمر الصادر على عريضة إذا لم يُقدَّم للتنفيذ في ظرف:",
+ o:["عشرة أيام من تاريخ صدوره","ثلاثين يوماً من تاريخ صدوره","ستين يوماً من تاريخ صدوره","سنة من تاريخ صدوره"],
+ a:1, e:"المادة (298) — سقوط الأمر، ولا يمنع هذا السقوط من استصدار أمر جديد."},
+
+{q:"ميعاد الطعن بطريق الاستئناف هو:",
+ o:["خمسة عشر يوماً","ثلاثون يوماً","ستون يوماً","عشرة أيام"],
+ a:1, e:"المادة (311) — ميعاد الاستئناف."},
+
+{q:"ميعاد الطعن بطريق النقض هو:",
+ o:["خمسة عشر يوماً","ثلاثون يوماً","ستون يوماً","تسعون يوماً"],
+ a:1, e:"المادة (341) — ميعاد الطعن بالنقض."},
+
+/* ===================== (56–70) التنفيذ والحجز والبيع بالمزاد ===================== */
+
+{q:"التنفيذ الجبري لا يجوز إلا بسند تنفيذي، والسندات التنفيذية هي:",
+ o:["الأحكام فقط",
+    "الأحكام والأوامر والقرارات والعقود الرسمية والكمبيالات والأوراق الأخرى التي يعطيها القانون هذه الصفة",
+    "العقود العرفية والكمبيالات فقط",
+    "الأحكام والأوامر فقط"],
+ a:1, e:"المادة (369) — التنفيذ الجبري والسند التنفيذي، ولا يجوز التنفيذ في غير الأحوال المستثناة بنص في القانون إلا بموجب صورة من السند التنفيذي عليها صيغة التنفيذ."},
+
+{q:"لا يجوز التنفيذ في الأحوال التي لا يجوز فيها اقتضاء الحق لعدم وجوده أو لكونه غير معين المقدار أو لكونه غير حال الأجل:",
+ o:["مطلقاً ولو كان السند تنفيذياً",
+    "إلا إذا كان النفاذ المعجل منصوصاً عليه في القانون أو مأموراً به في الحكم، وإنما يجوز بمقتضاها اتخاذ الإجراءات التحفظية",
+    "إلا بموافقة الخصم",
+    "إلا بإذن النيابة العامة"],
+ a:1, e:"المادة (372) — أحوال لا يجوز فيها التنفيذ."},
+
+{q:"إذا وصف الحكم خطأً بأنه ابتدائي أو انتهائي، أو رُفض الأمر بالنفاذ مع وجوب الحكم به، أو أُمر به في غير حالات وجوبه أو جوازه، أو أُمر بالكفالة حيث لا يجوز الأمر بها:",
+ o:["يكون الحكم باطلاً وجوباً",
+    "لذي الشأن أن يتظلم من ذلك إلى المحكمة الاستئنافية بتكليف خصمه بالحضور في ميعاد سبعة أيام، ويجوز إبداء التظلم في الجلسة أثناء نظر الاستئناف",
+    "يُحال الأمر إلى المحكمة العليا",
+    "يُصحَّح بقرار من قاضي الأمور الوقتية"],
+ a:1, e:"المادة (383) — التظلم من النفاذ المعجل."},
+
+{q:"لا يجوز الحجز على:",
+ o:["خاتم الزواج والفراش اللازم للمدين وزوجه وأقاربه وأصهاره المقيمين معه في معيشة واحدة، ولا على ما يرتدونه من الثياب، ولا على أدوات المنزل والمطبخ الضرورية",
+    "الكتب العلمية للمدين",
+    "أدوات الصناعة التي يستعملها المدين بنفسه",
+    "الوقود والحبوب اللازمة لقوته",
+    "أ"],
+ a:0, e:"المادة (396) — الأشياء التي لا يجوز حجزها، أما البنود الأخرى فهي مما لا يجوز الحجز عليه إلا لسبب خاص وفق المادة (397)."},
+
+{q:"لا يجوز الحجز على أجور الخدم والصناع والعمال أو مرتبات المستخدمين:",
+ o:["مطلقاً","إلا بقدر الربع، وعند التزاحم يُخصَّص نصفه لوفاء ديون النفقة المقررة والنصف الآخر لما عداها من الديون",
+    "إلا بقدر النصف","إلا بقدر الثلث"],
+ a:1, e:"المادة (401) — أجور الخدم والمستخدمين."},
+
+{q:"لا يجوز توقيع الحجز على ما في يد المدين من المنقولات إلا بعد مضي:",
+ o:["يوم على الأقل من إعلان سند التنفيذ للمدين ما لم ينص القانون على خلاف ذلك",
+    "ثلاثة أيام على الأقل",
+    "أسبوع على الأقل",
+    "شهر على الأقل"],
+ a:0, e:"المادة (412) — حجز المنقولات."},
+
+{q:"لا يجوز حجز الثمار المتصلة ولا المزروعات القائمة قبل نضجها بأكثر من:",
+ o:["عشرة أيام","خمسة عشر يوماً","خمسة وعشرين يوماً وإلا كان الحجز باطلاً","ثلاثين يوماً"],
+ a:2, e:"المادة (413) — حجز الثمار والمزروعات القائمة."},
+
+{q:"تصبح الأشياء محجوزة:",
+ o:["بمجرد ذكرها في محضر الحجز ولو لم يعيَّن عليها حارس",
+    "بعد تعيين حارس عليها",
+    "بعد إعلان المدين بمحضر الحجز",
+    "بعد تسجيل الحجز في دائرة الأملاك"],
+ a:0, e:"المادة (422) — صيرورة الأشياء محجوزة."},
+
+{q:"يُعتبر الحجز كأن لم يكن إذا لم يتم البيع خلال:",
+ o:["ثلاثة أشهر من تاريخ توقيعه","ستة أشهر من تاريخ توقيعه","سنة من تاريخ توقيعه","عشرين يوماً من تاريخ توقيعه"],
+ a:1, e:"المادة (433) — بطلان الحجز، ما لم يكن البيع قد وُقف باتفاق الخصوم أو بحكم المحكمة أو بمقتضى القانون، ومع ذلك لا يجوز الاتفاق على تأجيل البيع لمدة تزيد على ستة أشهر من تاريخ الاتفاق."},
+
+{q:"إذا كان المبلغ المحجوز من أجله يزيد على مائة دينار أو كانت قيمة الأشياء المطلوب بيعها تزيد على هذا المقدار، وجب الإعلان عن البيع:",
+ o:["بالنشر في الجريدة الرسمية، ويجوز للقاضي أن يأمر بالإضافة إلى ذلك بالنشر في أية جريدة محلية أخرى",
+    "بلصق الإعلانات فقط",
+    "بالبريد المسجل لكل الدائنين",
+    "بالإعلان الشفهي في السوق"],
+ a:0, e:"المادة (436) — الإعلان عن البيع، ويبين في الإعلان يوم البيع وساعته ومكانه ونوع الأشياء المحجوزة ووصفها بالإجمال."},
+
+{q:"يجوز لكل دائن بدين محقق الوجود حال الأداء أن يحجز ما يكون لمدينه لدى الغير من المبالغ أو الديون:",
+ o:["فقط إذا كانت حالّة",
+    "ولو كانت مؤجلة أو معلقة على شرط، وما يكون له من الأعيان المنقولة في يد الغير",
+    "فقط إذا كانت ثابتة بحكم نهائي",
+    "فقط إذا وافق المدين"],
+ a:1, e:"المادة (457) — حجز ما للمدين لدى الغير."},
+
+{q:"يجب أن يشتمل إعلان الحجز — وإلا كان باطلاً — على تعيين موطن مختار للحاجز في البلدة التي بها المحكمة الجزئية التابع لها موطن المحجوز لديه، وعلى تكليفه:",
+ o:["بالتقرير بما في ذمته خلال خمسة عشر يوماً",
+    "بالتقرير بما في ذمته خلال ثلاثة أيام",
+    "بالتقرير بما في ذمته خلال شهر",
+    "بتسليم الأعيان فوراً"],
+ a:0, e:"المادة (462) — مشتملات إعلان الحجز، ولا يجوز لقلم المحضرين إعلان ورقة الحجز إلا إذا أودع الحاجز خزانة المحكمة مبلغاً كافياً لأداء رسم محضر التقرير بما في الذمة."},
+
+{q:"إذا لم يحصل الإيداع وفقاً للمادتين السابقتين، وجب على المحجوز لديه أن يقرر بما في ذمته في قلم كتاب المحكمة الجزئية التابع هو لها خلال:",
+ o:["الخمسة عشر يوماً التالية لإعلانه بالحجز","الشهر التالي","الأيام الثلاثة التالية","الأسبوع التالي"],
+ a:0, e:"المادة (475) — تقرير المحجوز لديه بما في ذمته، ويذكر مقدار الدين وسببه وأسباب انقضائه إن كان قد انقضى ويبين جميع الحجوز الموقعة تحت يده."},
+
+{q:"الحجز الواقع تحت يد إحدى المصالح الحكومية لا يكون له أثر إلا لمدة:",
+ o:["سنة واحدة من تاريخ إعلانه",
+    "ثلاث سنوات من تاريخ إعلانه ما لم يُعلن الحاجز المحجوز لديه في هذه المدة باستبقاء الحجز",
+    "خمس سنوات من تاريخ إعلانه",
+    "عشر سنوات من تاريخ إعلانه"],
+ a:1, e:"المادة (488) — مدة الحجز لدى مصلحة حكومية، ولا تبدأ مدة الثلاث السنوات بالنسبة إلى خزانة المحكمة إلا من تاريخ إيداع المبالغ المحجوز عليها."},
+
+{q:"يُسجَّل التنبيه بنزع ملكية العقار قبل انقضاء ستين يوماً على إعلانه وإلا اعتُبر كأن لم يكن، ولا يجوز تسجيله قبل مضي:",
+ o:["ثلاثة أيام على إعلانه","خمسة عشر يوماً على إعلانه","شهر على إعلانه","عشرين يوماً على إعلانه"],
+ a:1, e:"المادة (528) — ميعاد التسجيل، وعند تعدد المعلنين لا يبدأ سريان الميعاد إلا من تاريخ آخر إعلان."},
+
+/* ===================== (71–85) قانون الإجراءات الجنائية ===================== */
+
+{q:"وفقاً لأحكام قانون الإجراءات الجنائية، تُرفع الدعوى الجنائية:",
+ o:["من المجني عليه في جميع الجرائم",
+    "من النيابة العامة وحدها، فيما عدا الأحوال التي يبين فيها القانون لمن أصابه الضرر أو لغيره حق رفعها",
+    "من مأمور الضبط القضائي مباشرة",
+    "من قاضي التحقيق من تلقاء نفسه"],
+ a:1, e:"النيابة العامة هي صاحبة الاختصاص الأصيل في تحريك الدعوى الجنائية، ولا يجوز لغيرها رفعها إلا في الأحوال التي يستثنيها القانون."},
+
+{q:"التحقيق الابتدائي في المواد الجنائية يباشره:",
+ o:["مأمور الضبط القضائي بصفة أصلية",
+    "عضو النيابة العامة أو قاضي التحقيق باعتبارهما سلطة تحقيق، ولهما الاستعانة بأعوان الضبط القضائي",
+    "رئيس المحكمة الابتدائية",
+    "المحامي العام فقط"],
+ a:1, e:"التحقيق الابتدائي من اختصاص سلطة التحقيق (النيابة العامة أو قاضي التحقيق)، ويجوز لها أن تندب أحد أعوان الضبط القضائي للقيام بعمل معين من أعمال التحقيق."},
+
+{q:"حالة التلبس بالجريمة تُعطي مأمور الضبط القضائي سلطة:",
+ o:["القبض على المتهم وتفتيشه دون حاجة إلى إذن من سلطة التحقيق",
+    "الحكم في الجريمة فوراً",
+    "إصدار أمر بالحبس الاحتياطي",
+    "حفظ الدعوى نهائياً"],
+ a:0, e:"في حالة التلبس يجوز لمأمور الضبط القضائي القبض على المتهم وتفتيشه، كما يجوز له الانتقال إلى محل الحادث واتخاذ الإجراءات التحفظية اللازمة."},
+
+{q:"الأصل في التفتيش في المواد الجنائية أن يكون:",
+ o:["بإذن من مأمور الضبط القضائي",
+    "بأمر مسبب من النيابة العامة أو قاضي التحقيق، ويُستثنى من ذلك حالة التلبس وحالات الضرورة",
+    "بموافقة المتهم الشفهية دائماً",
+    "بقرار من المحكمة المختصة فقط"],
+ a:1, e:"التفتيش من إجراءات التحقيق التي تستلزم أمراً مسبباً من سلطة التحقيق، ما لم توجد حالة تلبس أو ضرورة تقتضي التدخل الفوري."},
+
+{q:"الحبس الاحتياطي في المواد الجنائية يصدر به أمر:",
+ o:["من مأمور الضبط القضائي",
+    "من سلطة التحقيق المختصة (عضو النيابة العامة أو قاضي التحقيق) وفقاً للشروط والمواعيد التي يبينها القانون",
+    "من وزير العدل",
+    "من مدير السجن"],
+ a:1, e:"الأصل أن الحبس الاحتياطي إجراء من إجراءات التحقيق تتولاه سلطة التحقيق المختصة في الحدود والمواعيد التي يقررها القانون، ويجب أن يكون بأمر مسبب."},
+
+{q:"الأحكام الصادرة ابتدائياً في الجنح والمخالفات:",
+ o:["تكون نهائية غير قابلة للطعن",
+    "تكون قابلة للاستئناف أمام المحكمة الاستئنافية المختصة",
+    "تُطعن بالنقض مباشرة",
+    "تُطعن بالتماس إعادة النظر فقط"],
+ a:1, e:"الاستئناف طريق طعن عادي متاح في الأحكام الجنائية الصادرة ابتدائياً في الجنح والمخالفات، ويرفع إلى المحكمة الاستئنافية."},
+
+{q:"الطعن بالنقض في المواد الجنائية يكون أمام المحكمة العليا للأسباب الآتية:",
+ o:["مخالفة القانون أو الخطأ في تطبيقه أو تأويله، وبطلان الحكم، وبطلان الإجراءات الذي أثر في الحكم",
+    "عدم اقتناع المحكمة بالأدلة",
+    "خطأ المحكمة في تقدير العقوبة فقط",
+    "عدم رضا المحكوم عليه عن النتيجة"],
+ a:0, e:"النقض رقابة قانونية بحتة على تطبيق القانون وشكله، وليس طريقاً لإعادة تقدير الأدلة."},
+
+{q:"البطلان المطلق في المواد الجنائية — لأنه متعلق بالنظام العام:",
+ o:["يجوز التمسك به في أي حالة كانت عليها الدعوى، وللمحكمة أن تقضي به من تلقاء نفسها",
+    "يجب التمسك به قبل الدفاع في الموضوع وإلا سقط",
+    "لا يجوز التمسك به بعد الحكم الابتدائي",
+    "يقتصر على مرحلة النقض"],
+ a:0, e:"البطلان المطلق لا يسقط بالتنازل ولا بمرور الوقت، وتمسك المحكمة به من تلقاء نفسها واجب متى تعلق بالنظام العام."},
+
+{q:"الحكم الجنائي النهائي الصادر بالإدانة أو البراءة:",
+ o:["لا حجية له أمام المحاكم المدنية",
+    "تكون له حجية أمام المحاكم المدنية فيما يتعلق بوقوع الجريمة وبصحة نسبتها إلى فاعلها",
+    "يمنع دائماً رفع الدعوى المدنية",
+    "يُلزم المحكمة المدنية بالحكم بالتعويض ذاته"],
+ a:1, e:"حجية الحكم الجنائي أمام القضاء المدني تتعلق بالوقائع التي فصل فيها، أما تقدير التعويض فيبقى من اختصاص القاضي المدني."},
+
+{q:"القاضي الجنائي في تقدير الأدلة:",
+ o:["ملزم بالأخذ بشهادة الشهود إذا تعددت",
+    "حر في تكوين عقيدته من الأدلة المطروحة عليه، ولا يجوز إلزامه بالأخذ بدليل معين إلا بنص القانون",
+    "ملزم بالأخذ بإقرار المتهم",
+    "ملزم بالأخذ بتقرير الخبير"],
+ a:1, e:"مبدأ الاقتناع القضائي الحر: للمحكمة الجنائية سلطة تقديرية في وزن الأدلة، مع بيان أسباب حكمها."},
+
+{q:"في الجرائم التي يتوقف رفع الدعوى الجنائية فيها على تقديم شكوى، فإن التنازل عن الشكوى:",
+ o:["لا يؤثر في الدعوى",
+    "يترتب عليه انقضاء الدعوى الجنائية إذا حصل قبل صدور حكم نهائي",
+    "يؤدي إلى إحالة الدعوى إلى القضاء المدني",
+    "يُبقي الدعوى قائمة ولكن دون عقوبة"],
+ a:1, e:"الشكوى شرط لرفع الدعوى في هذه الجرائم، فإذا تنازل الشاكي عن شكواه انقضت الدعوى الجنائية، ما لم يكن التنازل بعد حكم نهائي."},
+
+{q:"الصلح في المخالفات:",
+ o:["لا يترتب عليه أي أثر في الدعوى الجنائية",
+    "يجوز ويترتب عليه انقضاء الدعوى الجنائية وفقاً لأحكام القانون",
+    "يُحوِّل المخالفة إلى جنحة",
+    "يشترط فيه موافقة المحكمة الاستئنافية"],
+ a:1, e:"الصلح في المخالفات من أسباب انقضاء الدعوى الجنائية، ويتحقق وفقاً للأوضاع التي يقررها القانون."},
+
+{q:"المداولة في الحكم الجنائي:",
+ o:["علنية بحضور الخصوم","سرية ولا يحضرها إلا القضاة الذين اشتركوا في المرافعة",
+    "تُجرى بحضور النيابة العامة فقط","يُسمح بحضور المحامي"],
+ a:1, e:"المداولة سرية دائماً في المواد الجنائية، ويجب أن تُبنى على ما تم في الجلسة العلنية من مرافعة وأدلة."},
+
+{q:"حضور المتهم أمام المحكمة الجنائية:",
+ o:["ليس ضرورياً في جميع الأحوال",
+    "الأصل أن يحضر المتهم بنفسه، وللمحكمة أن تنظر الدعوى غيابياً في الحدود التي يجيزها القانون",
+    "يجب أن يكون بحضور محامٍ إجبارياً في الجنح",
+    "يجوز أن ينيب عنه أي شخص ولو لم يكن محامياً"],
+ a:1, e:"الأصل في المحاكمة الجنائية حضور المتهم، ويجوز الحكم غيابياً في الأحوال والشروط التي يحددها القانون."},
+
+{q:"من الإجراءات التي تملكها النيابة العامة في حالة التلبس:",
+ o:["الانتقال فوراً إلى محل الحادث والقيام بالمعاينة والتحفظ على الأدلة وسماع أقوال الشهود",
+    "إصدار حكم بالإدانة",
+    "إلغاء الحكم الابتدائي",
+    "تعيين هيئة المحكمة"],
+ a:0, e:"في حالة التلبس تملك النيابة العامة — بنفسها أو بواسطة أعوان الضبط القضائي — اتخاذ الإجراءات العاجلة اللازمة لضبط الجريمة وجمع أدلتها."},
+
+/* ===================== (86–100) القانون الإداري والإجراءات الإدارية ===================== */
+
+{q:"القرار الإداري هو:",
+ o:["عمل مادي تقوم به الإدارة دون أثر قانوني",
+    "تصرف قانوني انفرادي يصدر عن الإدارة في مجال وظيفتها، يُنشئ أو يُعدِّل أو يُنهي مراكز قانونية",
+    "حكم قضائي صادر من جهة إدارية",
+    "عقد من عقود القانون الخاص"],
+ a:1, e:"القرار الإداري عمل قانوني انفرادي صادر عن سلطة إدارية بوصفها سلطة عامة، يهدف إلى إحداث أثر قانوني."},
+
+{q:"أركان القرار الإداري هي:",
+ o:["الاختصاص، الشكل، السبب، المحل، الغاية",
+    "الرضا، المحل، السبب، الشكل",
+    "الاختصاص، الرضا، الأهلية، المحل",
+    "الشكل، الغاية، الرضا، الأهلية"],
+ a:0, e:"أركان القرار الإداري خمسة: الاختصاص، الشكل، السبب، المحل، الغاية؛ ويُقابله عيوب خمسة تُبطل القرار أو تجعله قابلاً للإلغاء."},
+
+{q:"عيب الاختصاص في القرار الإداري يعني:",
+ o:["صدور القرار ممن لا يملك إصداره قانوناً",
+    "مخالفة القرار للقانون",
+    "الإخلال بإجراء شكلي جوهري",
+    "الانحراف في استعمال السلطة"],
+ a:0, e:"عيب الاختصاص هو أهم العيوب وأخطرها، ويتعلق بالنظام العام، فيجوز التمسك به في أي مرحلة، وللقاضي أن يقضي به من تلقاء نفسه."},
+
+{q:"عيب السبب في القرار الإداري يتحقق عندما:",
+ o:["يُبنى القرار على وقائع غير موجودة أو يُخطئ في تقديرها",
+    "يصدر القرار ممن لا يملكه",
+    "يخالف القرار نصاً قانونياً",
+    "يُخالف إجراءً شكلياً جوهرياً"],
+ a:0, e:"سبب القرار هو الواقعة المادية أو القانونية التي تدفع الإدارة إلى إصداره؛ فإذا كانت هذه الواقعة غير موجودة أو قدَّرتها الإدارة خطأً كان القرار معيباً بعيب السبب."},
+
+{q:"عيب الغاية في القرار الإداري يتحقق عندما:",
+ o:["تستهدف الإدارة غرضاً آخر غير المصلحة العامة المخصصة لها",
+    "يصدر القرار من غير المختص",
+    "يخالف القرار القانون",
+    "تخالف الإجراءات الشكلية"],
+ a:0, e:"يُسمَّى أيضاً الانحراف في استعمال السلطة، وهو أن تستعمل الإدارة سلطتها لتحقيق غرض غير الذي منحتها إياه القانون."},
+
+{q:"عيب المحل في القرار الإداري يتحقق عندما:",
+ o:["يخالف القرار نصاً قانونياً أو يكون مستحيلاً أو غامضاً",
+    "تُقدَّر الوقائع خطأً",
+    "يُخالف إجراءً جوهرياً",
+    "يكون القرار معلقاً على شرط"],
+ a:0, e:"محل القرار هو الأثر القانوني الذي يحدثه، فإذا خالف القانون أو كان مستحيلاً أو غير محدد كان معيباً بعيب المحل."},
+
+{q:"عيب الشكل في القرار الإداري يتحقق عند:",
+ o:["الإخلال بإجراء شكلي جوهري يقرره القانون، كعدم التسبيب أو عدم أخذ رأي جهة معينة",
+    "صدور القرار من غير المختص",
+    "استهداف غرض شخصي",
+    "تقدير الوقائع تقديراً خاطئاً"],
+ a:0, e:"الشكل هو المظهر الخارجي للقرار؛ فإذا تطلَّب القانون إجراءً شكلياً جوهرياً كالتسبيب أو المداولة أو أخذ رأي هيئة معينة، فإن الإخلال به يعيب القرار."},
+
+{q:"المصلحة في دعوى الإلغاء يشترط فيها أن تكون:",
+ o:["محتملة فقط",
+    "قائمة ومؤكدة، بأن يصيب الطاعن من القرار الإداري ضرر شخصي ومباشر",
+    "مالية فقط",
+    "مشتركة بين جميع المواطنين"],
+ a:1, e:"شرط المصلحة هو شرط أساسي لقبول دعوى الإلغاء، فإذا لم يكن للطاعن مصلحة قائمة ومؤكدة في إلغاء القرار كان الطعن غير مقبول شكلاً."},
+
+{q:"وقف تنفيذ القرار الإداري يشترط له:",
+ o:["مجرد رفع دعوى الإلغاء",
+    "جدية الطعن بالبطلان، والخشية من ترتيب تنفيذ القرار لضرر يتعذر تداركه",
+    "تقديم كفالة دائماً",
+    "موافقة الإدارة على الوقف"],
+ a:1, e:"قاضي الأمور المستعجلة (أو قاضي الإلغاء) لا يأمر بوقف التنفيذ إلا إذا بدا الطعن جدياً وتوافر ما يدل على خشية وقوع ضرر جسيم يتعذر تداركه عند تنفيذ القرار."},
+
+{q:"التظلم الإداري قبل اللجوء إلى القضاء:",
+ o:["لا قيمة له قانوناً",
+    "قد يكون وجوبياً إذا نص القانون على ذلك، فلا تُقبل الدعوى إلا بعد تقديمه ورفضه أو مضي الميعاد دون رد",
+    "يُغني دائماً عن القضاء",
+    "يوقف تنفيذ القرار وجوباً"],
+ a:1, e:"التظلم الإداري قد يكون اختيارياً وقد يكون وجوبياً، وفي الحالة الثانية لا تُقبل دعوى الإلغاء إلا بعد استنفاد التظلم أو انقضاء ميعاد الرد عليه."},
+
+{q:"القرار الإداري السلبي هو:",
+ o:["قرار مكتوب بالرفض",
+    "امتناع الإدارة عن اتخاذ قرار يجب عليها اتخاذه، ويُعتبر قراراً سلبياً ينشئ مركزاً قانونياً قابلاً للطعن",
+    "قرار غير قانوني",
+    "قرار مؤقت"],
+ a:1, e:"امتناع الإدارة عن أداء واجب قانوني يعدُّ قراراً سلبياً، ويتحقق بمضي المدة القانونية التي كان يجب أن تُصدر فيها القرار."},
+
+{q:"الفصل في المنازعات الإدارية ودعاوى الإلغاء:",
+ o:["من اختصاص القضاء العادي",
+    "من اختصاص القضاء الإداري المختص، باعتباره صاحب الولاية العامة في المنازعات الإدارية",
+    "من اختصاص المحكمة العليا دائماً",
+    "من اختصاص النيابة العامة"],
+ a:1, e:"قواعد الاختصاص الولائي توجب نظر المنازعات الإدارية أمام القضاء الإداري، ولا يجوز للقضاء العادي النظر فيها إلا في الحدود التي يجيزها القانون."},
+
+{q:"الرقابة القضائية على القرارات الإدارية:",
+ o:["تمتد إلى الملاءمة بصفة أصلية",
+    "تقتصر على المشروعية، فلا يبسط القاضي رقابته على ملاءمة القرار الإداري إلا في الحدود الضيقة التي يقررها القانون",
+    "لا تمتد إلى عيب الاختصاص",
+    "تقتصر على الشكل فقط"],
+ a:1, e:"الأصل أن رقابة القضاء الإداري رقابة مشروعية لا ملاءمة، إلا في حالات استثنائية كالسلطة التقديرية المرتبطة بظروف معينة."},
+
+{q:"في حالة الجمع بين دعوى الإلغاء ودعوى التعويض:",
+ o:["لا يجوز الجمع بينهما مطلقاً",
+    "يجوز الجمع بينهما إذا كان القرار الإداري قد ألحق ضرراً بالطاعن، فيُطالب بالإلغاء والتعويض عن الأضرار الناتجة عن القرار",
+    "يجب رفع دعوى التعويض بعد انقضاء سنة على الإلغاء",
+    "يُشترط أن يكون التعويض عن ضرر مستقبلي فقط"],
+ a:1, e:"القرار الإداري المعيب قد يُلغي، وفي الوقت ذاته قد يكون قد أحدث ضرراً يستوجب التعويض، فيجوز للطاعن الجمع بين الطلبين."},
+
+{q:"تنفيذ الأحكام الصادرة ضد الإدارة:",
+ o:["لا يحتاج إلى إجراءات",
+    "الإدارة ملزمة بتنفيذ الأحكام القضائية الصادرة ضدها، وللقاضي المختص أن يتخذ الإجراءات التي تكفل التنفيذ",
+    "يُوقف دائماً عند طعن الإدارة",
+    "يتم بقرار من وزير العدل"],
+ a:1, e:"مبدأ خضوع الإدارة للقانون يقتضي التزامها بتنفيذ الأحكام الصادرة ضدها، ومع ذلك قد تُتَّخذ إجراءات خاصة لضمان التنفيذ."}
+
 ];
 
-// ============================================================
-//  APPLICATION LOGIC
-// ============================================================
-let currentQuestions = [];
-let currentIndex = 0;
-let selectedAnswers = [];
-let userAnswers = [];
-let quizMode = 'practice';
-let quizFinished = false;
+/* =========================================================
+   منطق التطبيق
+   ========================================================= */
+const TOTAL = QUESTIONS.length;
+let order = [];
+let idx = 0;
+let score = 0;
+let userAnswers = new Array(TOTAL).fill(null);
+let answered = false;
 
-const homeView = document.getElementById('homeView');
-const quizView = document.getElementById('quizView');
-const resultView = document.getElementById('resultView');
-const axisFilter = document.getElementById('axisFilter');
-const difficultyFilter = document.getElementById('difficultyFilter');
-const countFilter = document.getElementById('countFilter');
-const totalQuestionCount = document.getElementById('totalQuestionCount');
-const qCounter = document.getElementById('qCounter');
-const qSubjectBadge = document.getElementById('qSubjectBadge');
-const progressFill = document.getElementById('progressFill');
-const qAxisLabel = document.getElementById('qAxisLabel');
-const qDifficultyLabel = document.getElementById('qDifficultyLabel');
-const qText = document.getElementById('qText');
-const optionsContainer = document.getElementById('optionsContainer');
-const feedbackContainer = document.getElementById('feedbackContainer');
-const verifyBtn = document.getElementById('verifyBtn');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const quitBtn = document.getElementById('quitBtn');
-const finalScore = document.getElementById('finalScore');
-const finalPercent = document.getElementById('finalPercent');
-const correctCount = document.getElementById('correctCount');
-const wrongCount = document.getElementById('wrongCount');
-const unansweredCount = document.getElementById('unansweredCount');
-const performanceMsg = document.getElementById('performanceMsg');
-const reviewMistakesBtn = document.getElementById('reviewMistakesBtn');
-const retryBtn = document.getElementById('retryBtn');
-const homeBtn = document.getElementById('homeBtn');
-const reviewContainer = document.getElementById('reviewContainer');
-const startPracticeBtn = document.getElementById('startPracticeBtn');
-const startExamBtn = document.getElementById('startExamBtn');
+/* خلط عشوائي للخيارات */
+function shuffleQuestion(q){
+  const opts = q.o.map((t,i)=>({t, ok: i===q.a}));
+  for(let i=opts.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [opts[i],opts[j]] = [opts[j],opts[i]];
+  }
+  return {q:q.q, o:opts.map(x=>x.t), a:opts.findIndex(x=>x.ok), e:q.e};
+}
 
-function init() {
-    const axes = [...new Set(questions.map(q => q.axis))];
-    axes.forEach(axis => {
-        const opt = document.createElement('option');
-        opt.value = axis;
-        opt.textContent = axis;
-        axisFilter.appendChild(opt);
+/* تجهيز الاختبار */
+function prepareExam(){
+  order = QUESTIONS.map(shuffleQuestion);
+  idx = 0; score = 0; answered = false;
+  userAnswers = new Array(TOTAL).fill(null);
+  updateHeader();
+}
+
+/* تحديث الشريط العلوي */
+function updateHeader(){
+  document.getElementById('stCounter').textContent = (answered||idx>0? Math.min(idx+1,TOTAL) : 0) + ' / ' + TOTAL;
+  document.getElementById('stScore').textContent = score;
+  const pct = Math.round((score/Math.max(1,(idx + (answered?1:0))))*100);
+  document.getElementById('stPct').textContent = (isNaN(pct)?0:pct) + '%';
+  document.getElementById('stBar').style.width = ((idx + (answered?1:0))/TOTAL*100) + '%';
+}
+
+const LETTERS = ['أ','ب','ج','د'];
+
+/* عرض السؤال */
+function renderQuestion(){
+  answered = false;
+  const q = order[idx];
+  document.getElementById('qBadge').textContent = 'السؤال ' + (idx+1) + ' من ' + TOTAL;
+  document.getElementById('qText').textContent = q.q;
+
+  const box = document.getElementById('qOpts');
+  box.innerHTML = '';
+  q.o.forEach((text,i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = '<span class="ltr">'+LETTERS[i]+'</span><span>'+text+'</span>';
+    b.addEventListener('click', ()=>choose(i));
+    box.appendChild(b);
+  });
+
+  const ex = document.getElementById('explainBox');
+  ex.classList.add('hidden');
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('nextBtn').textContent = (idx === TOTAL-1) ? 'إظهار النتيجة النهائية' : 'السؤال التالي ←';
+  updateHeader();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* اختيار إجابة */
+function choose(i){
+  if(answered) return;
+  answered = true;
+  const q = order[idx];
+  const btns = document.querySelectorAll('#qOpts .opt');
+
+  btns.forEach((b,k)=>{
+    b.disabled = true;
+    if(k === q.a) b.classList.add('ok');
+    else if(k === i) b.classList.add('no');
+    else b.classList.add('dim');
+  });
+
+  const correct = (i === q.a);
+  if(correct) score++;
+  userAnswers[idx] = i;
+
+  const ex = document.getElementById('explainBox');
+  const v = document.getElementById('verdict');
+  v.textContent = correct ? '✔ إجابة صحيحة — أحسنت' : '✘ إجابة خاطئة — الصحيح هو: ' + LETTERS[q.a] + ') ' + q.o[q.a];
+  v.className = 'verdict ' + (correct?'g':'r');
+  document.getElementById('explainText').textContent = q.e;
+  ex.classList.remove('hidden');
+
+  document.getElementById('nextBtn').disabled = false;
+  updateHeader();
+}
+
+/* الانتقال للسؤال التالي */
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  if(idx < TOTAL-1){ idx++; renderQuestion(); }
+  else { showResults(); }
+});
+
+/* شاشة النتيجة */
+function showResults(){
+  document.getElementById('quizScreen').classList.add('hidden');
+  const rs = document.getElementById('resultScreen');
+  rs.classList.remove('hidden');
+  const pct = Math.round(score/TOTAL*100);
+  document.getElementById('finalPct').textContent = pct + '%';
+  document.getElementById('finalFrac').textContent = score + ' / ' + TOTAL;
+  document.getElementById('scoreCircle').style.setProperty('--p', pct);
+
+  let msg='', sub='';
+  if(pct >= 90){ msg='ممتاز — مستوى متميز جداً'; sub='أداء يرقى إلى مستوى كاتب ضبط محترف متمكن من الإجراءات والمواعيد.'; }
+  else if(pct >= 80){ msg='جيد جداً'; sub='أساس قوي، راجع الأسئلة التي أخطأت فيها لتثبيت المعلومة.'; }
+  else if(pct >= 70){ msg='جيد'; sub='تحتاج إلى مراجعة دقيقة لأحكام الإعلان والمواعيد والبطلان.'; }
+  else if(pct >= 50){ msg='مقبول'; sub='يُنصح بإعادة قراءة النصوص والتركيز على المواد التي أخفقت فيها.'; }
+  else { msg='يحتاج إلى مراجعة شاملة'; sub='أعد دراسة الكتاب من البداية مع التركيز على المواعيد والإجراءات.'; }
+  document.getElementById('gradeMsg').textContent = msg;
+  document.getElementById('gradeSub').textContent = sub;
+
+  document.getElementById('stBar').style.width = '100%';
+  document.getElementById('stCounter').textContent = TOTAL + ' / ' + TOTAL;
+  document.getElementById('stPct').textContent = pct + '%';
+
+  buildReview();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* المراجعة الشاملة */
+function buildReview(){
+  const wrap = document.getElementById('reviewList');
+  wrap.innerHTML = '';
+  order.forEach((q,i)=>{
+    const mine = userAnswers[i];
+    const correct = (mine === q.a);
+    const div = document.createElement('div');
+    div.className = 'rev-item';
+    let html = '<div class="rq">' + (i+1) + '. ' + q.q + '</div>';
+    q.o.forEach((t,k)=>{
+      let cls = 'ra';
+      if(k === q.a) cls += ' g';
+      else if(k === mine) cls += ' r';
+      html += '<div class="'+cls+'">' + LETTERS[k] + ') ' + t + (k===q.a?'  ✔':(k===mine?'  ✘':'')) + '</div>';
     });
-    totalQuestionCount.textContent = questions.length;
+    html += '<div class="re">التعليل: ' + q.e + '</div>';
+    if(!correct) html = '<div style="font-size:12.5px;color:#b91c1c;font-weight:700;margin-bottom:4px;">إجابتك كانت خاطئة</div>' + html;
+    div.innerHTML = html;
+    wrap.appendChild(div);
+  });
 }
 
-function shuffle(arr) {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-}
+/* الأزرار */
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('quizScreen').classList.remove('hidden');
+  prepareExam();
+  renderQuestion();
+});
 
-function startQuiz(mode) {
-    quizMode = mode;
-    quizFinished = false;
-    let pool = [...questions];
-    const axis = axisFilter.value;
-    const diff = difficultyFilter.value;
-    if (axis !== 'all') pool = pool.filter(q => q.axis === axis);
-    if (diff !== 'all') pool = pool.filter(q => q.difficulty === diff);
+document.getElementById('retryBtn').addEventListener('click', ()=>{
+  document.getElementById('resultScreen').classList.add('hidden');
+  document.getElementById('reviewWrap').classList.add('hidden');
+  document.getElementById('quizScreen').classList.remove('hidden');
+  prepareExam();
+  renderQuestion();
+});
 
-    if (pool.length === 0) {
-        alert('لا توجد أسئلة مطابقة للفلاتر المحددة.');
-        return;
-    }
-
-    const countVal = countFilter.value;
-    let count = countVal === 'all' ? pool.length : Math.min(parseInt(countVal), pool.length);
-    currentQuestions = shuffle(pool).slice(0, count);
-    currentIndex = 0;
-    selectedAnswers = [];
-    userAnswers = currentQuestions.map(() => null);
-    userAnswers = userAnswers.map(() => ({ selected: [], verified: false, isCorrect: null }));
-
-    homeView.classList.add('hidden');
-    quizView.classList.remove('hidden');
-    resultView.classList.add('hidden');
-    reviewContainer.classList.add('hidden');
-
-    renderQuestion();
-}
-
-function renderQuestion() {
-    const q = currentQuestions[currentIndex];
-    const ua = userAnswers[currentIndex];
-
-    qCounter.textContent = `السؤال ${currentIndex + 1} من ${currentQuestions.length}`;
-    qSubjectBadge.textContent = 'كاتب الضبط';
-    qAxisLabel.textContent = q.axis;
-    qDifficultyLabel.textContent = q.difficulty === 'hard' ? 'صعب' : 'صعب جداً';
-    qText.textContent = q.question;
-
-    progressFill.style.width = ((currentIndex + 1) / currentQuestions.length * 100) + '%';
-
-    optionsContainer.innerHTML = '';
-    feedbackContainer.classList.add('hidden');
-    feedbackContainer.innerHTML = '';
-
-    const letters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و', 'ز', 'ح'];
-
-    q.options.forEach((opt, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerHTML = `<span class="letter">${letters[idx]}</span><span>${opt}</span>`;
-
-        const isSelected = ua.selected.includes(idx);
-        if (isSelected) btn.classList.add('checked');
-
-        if (ua.verified) {
-            btn.classList.add('disabled');
-            const isCorrect = q.correct.includes(idx);
-            if (isSelected && isCorrect) btn.classList.add('correct');
-            else if (isSelected && !isCorrect) btn.classList.add('wrong');
-            else if (!isSelected && isCorrect) btn.classList.add('missed');
-        } else {
-            btn.addEventListener('click', () => toggleOption(idx, btn));
-        }
-
-        optionsContainer.appendChild(btn);
-    });
-
-    if (ua.verified) {
-        showFeedback(q, ua);
-        verifyBtn.disabled = true;
-        verifyBtn.textContent = '✅ تم التحقق';
-    } else {
-        verifyBtn.disabled = ua.selected.length === 0;
-        verifyBtn.textContent = '✅ تحقق';
-    }
-
-    prevBtn.disabled = currentIndex === 0;
-    nextBtn.textContent = currentIndex === currentQuestions.length - 1 ? 'إنهاء ▶' : 'التالي ▶';
-}
-
-function toggleOption(idx, btn) {
-    const ua = userAnswers[currentIndex];
-    if (ua.verified) return;
-
-    const pos = ua.selected.indexOf(idx);
-    if (pos === -1) {
-        ua.selected.push(idx);
-        btn.classList.add('checked');
-    } else {
-        ua.selected.splice(pos, 1);
-        btn.classList.remove('checked');
-    }
-
-    verifyBtn.disabled = ua.selected.length === 0;
-}
-
-function verifyAnswer() {
-    const q = currentQuestions[currentIndex];
-    const ua = userAnswers[currentIndex];
-    if (ua.verified) return;
-
-    ua.verified = true;
-    const selectedSet = new Set(ua.selected);
-    const correctSet = new Set(q.correct);
-    ua.isCorrect = selectedSet.size === correctSet.size && [...selectedSet].every(x => correctSet.has(x));
-
-    renderQuestion();
-}
-
-function showFeedback(q, ua) {
-    feedbackContainer.classList.remove('hidden');
-    const cls = ua.isCorrect ? 'correct-fb' : 'wrong-fb';
-    const title = ua.isCorrect ? '✅ إجابة صحيحة' : '❌ إجابة خاطئة';
-    feedbackContainer.className = `feedback-box ${cls}`;
-    feedbackContainer.innerHTML = `
-        <div class="fb-title">${title}</div>
-        <div class="fb-explain">${q.explanation}</div>
-    `;
-}
-
-function nextQuestion() {
-    if (currentIndex < currentQuestions.length - 1) {
-        currentIndex++;
-        renderQuestion();
-    } else {
-        finishQuiz();
-    }
-}
-
-function prevQuestion() {
-    if (currentIndex > 0) {
-        currentIndex--;
-        renderQuestion();
-    }
-}
-
-function finishQuiz() {
-    quizFinished = true;
-    quizView.classList.add('hidden');
-    resultView.classList.remove('hidden');
-
-    let correct = 0, wrong = 0, unanswered = 0;
-    userAnswers.forEach((ua, i) => {
-        if (!ua.verified) unanswered++;
-        else if (ua.isCorrect) correct++;
-        else wrong++;
-    });
-
-    const total = currentQuestions.length;
-    const pct = total > 0 ? Math.round(correct / total * 100) : 0;
-
-    finalScore.textContent = `${correct}/${total}`;
-    finalPercent.textContent = `${pct}%`;
-    correctCount.textContent = correct;
-    wrongCount.textContent = wrong;
-    unansweredCount.textContent = unanswered;
-
-    let msg = '';
-    if (pct >= 90) msg = '🏆 أداء ممتاز — مستوى عالٍ جداً';
-    else if (pct >= 75) msg = '👍 أداء جيد جداً';
-    else if (pct >= 60) msg = '📚 أداء متوسط — يحتاج مراجعة';
-    else if (pct >= 40) msg = '⚠️ أداء ضعيف — راجع المحاور';
-    else msg = '🔴 يحتاج إلى مراجعة شاملة';
-    performanceMsg.textContent = msg;
-}
-
-function showReview() {
-    reviewContainer.classList.remove('hidden');
-    reviewContainer.innerHTML = '<h3 style="margin-bottom:12px; color:#1e1b4b;">📖 مراجعة الأخطاء</h3>';
-
-    let hasMistakes = false;
-    currentQuestions.forEach((q, i) => {
-        const ua = userAnswers[i];
-        if (ua.verified && !ua.isCorrect) {
-            hasMistakes = true;
-            const letters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و', 'ز', 'ح'];
-            const correctTexts = q.correct.map(idx => `${letters[idx]}) ${q.options[idx]}`).join(' — ');
-            const selectedTexts = ua.selected.length > 0
-                ? ua.selected.map(idx => `${letters[idx]}) ${q.options[idx]}`).join(' — ')
-                : 'لم تختر أي إجابة';
-
-            const div = document.createElement('div');
-            div.className = 'review-item';
-            div.innerHTML = `
-                <div class="review-q">${i + 1}. ${q.question}</div>
-                <div class="review-answer review-wrong">❌ إجابتك: ${selectedTexts}</div>
-                <div class="review-answer review-correct">✅ الإجابة الصحيحة: ${correctTexts}</div>
-                <div class="review-answer" style="color:#475569; margin-top:6px;">${q.explanation}</div>
-            `;
-            reviewContainer.appendChild(div);
-        }
-    });
-
-    if (!hasMistakes) {
-        reviewContainer.innerHTML += '<p style="text-align:center; color:#16a34a; font-weight:700;">🎉 لا توجد أخطاء — أداء مثالي!</p>';
-    }
-}
-
-function goHome() {
-    homeView.classList.remove('hidden');
-    quizView.classList.add('hidden');
-    resultView.classList.add('hidden');
-}
-
-// ============================================================
-//  EVENT LISTENERS
-// ============================================================
-startPracticeBtn.addEventListener('click', () => startQuiz('practice'));
-startExamBtn.addEventListener('click', () => startQuiz('exam'));
-verifyBtn.addEventListener('click', verifyAnswer);
-nextBtn.addEventListener('click', nextQuestion);
-prevBtn.addEventListener('click', prevQuestion);
-quitBtn.addEventListener('click', finishQuiz);
-retryBtn.addEventListener('click', () => startQuiz(quizMode));
-homeBtn.addEventListener('click', goHome);
-reviewMistakesBtn.addEventListener('click', showReview);
-
-init();
+document.getElementById('reviewBtn').addEventListener('click', ()=>{
+  const rw = document.getElementById('reviewWrap');
+  rw.classList.toggle('hidden');
+  if(!rw.classList.contains('hidden')) rw.scrollIntoView({behavior:'smooth'});
+});
 </script>
 </body>
 </html>
